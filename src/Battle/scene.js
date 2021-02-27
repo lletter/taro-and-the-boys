@@ -23,13 +23,23 @@ export class BattleScene extends Scene {
     return this.menus[0].style.visibility === 'hidden';
   }
 
+  /**
+   * Set up the scene.
+   */
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
 
+    // The menu stack. Don't remove the root menu, it's buggy.
+    // Sub-menu adds menus onto the menu stack
     this.menus = [];
     this.menus.push(document.querySelector('.actions-menu'));
 
+    /**
+     * Maybe put this somewhere else haah
+     * Remove a menu from the menu stack on click.
+     * The mouse-handler div is the game window.
+     */
     document.querySelector('.mouse-handler').addEventListener('click', () => {
       if (this.menus.length > 1) {
         this.menus.pop().remove();
@@ -46,6 +56,9 @@ export class BattleScene extends Scene {
     return div;
   }
 
+  /**
+   * The main hook to open a menu and choose one of the actor's actions.
+   */
   openMenu(gm, actor, callback) {
     this.menus[0].style.visibility = 'visible';
     this.menus[0].style.pointerEvents = 'auto';
@@ -55,12 +68,12 @@ export class BattleScene extends Scene {
         switch (move.type) {
           case TARGETED: {
             const enemies = gm.actors.filter((a) => a.enemy);
-            const cb = (target) => callback(move.create(actor, target));
+            const cb = (target) => callback(move.generateAction(target));
             this.subMenu(enemies, cb, this.menus[0]);
             return;
           }
           default: {
-            callback(move.create(actor));
+            callback(move.generateAction());
             return;
           }
         }
@@ -68,13 +81,19 @@ export class BattleScene extends Scene {
     });
   }
 
+  /**
+   * Open a sub-menu for targeting enemies and such.
+   * @param {function} callback takes a callback function to execute with one
+   * of the choices in the choices param.
+   * @param {array} choices a list of actors. other choices aren't supported I think.
+   */
   subMenu(choices, callback, root) {
     const menu = document.createElement('div');
     menu.classList.add('menu', 'submenu');
     menu.style.transform = 'translateY(-8px)';
-    choices.forEach((target) => {
-      this.createMenuItem(menu, target.name, () => {
-        callback(target);
+    choices.forEach((choice) => {
+      this.createMenuItem(menu, choice.name, () => {
+        callback(choice);
       });
     });
     root.appendChild(menu);

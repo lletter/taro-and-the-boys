@@ -1,4 +1,5 @@
 import { TARGETED, SELF_TARGETED } from './action-types';
+import gsap from 'gsap';
 
 // Global Status List
 const status = {
@@ -13,9 +14,64 @@ function delay(time) {
 }
 
 /**
- * @param {Object} options options object
- * @param {Actor} options.damage the amount of damage
+ * Create a "Move" - an object that holds the move's data (damage, etc)
+ * and other parameters defined per options object.
  */
+class Move {
+  /**
+   * @param {Object} owner The object doing the move - typically the move's owner
+   * @param {string} type The type of targeting the move uses see action-types.js
+   */
+  constructor(owner, config) {
+    this.owner = owner;
+    this.config = config;
+    this.name = 'NULL';
+    this.type = SELF_TARGETED;
+  }
+
+  /**
+   * Create an "action", a callable function for the game manager that
+   * is run. Takes parameters based on type defined in constructor.
+   */
+  generateAction() {
+    return async function action() {
+      console.log(
+        'No move returned. Did you forget to extend generateAction()?'
+      );
+    };
+  }
+}
+
+export class Attack extends Move {
+  /**
+   * @param {Object} config options object
+   * @param {Actor} config.damage The raw damage value
+   */
+  constructor(owner, config) {
+    super(owner, config);
+    this.type = TARGETED;
+    this.damage = config.damage;
+    this.name = 'Attack';
+    this.generateAction = this.generateAction.bind(this);
+  }
+
+  /**
+   * See Move class.
+   * @param {Actor} target the target to attack
+   */
+  generateAction(target) {
+    return async () => {
+      if (target.status == status.DEFEND) {
+        target.HP -= this.damage * target.defenseMod;
+      } else {
+        target.HP -= this.damage;
+      }
+      await target.view.onHit(0.5);
+      console.log(`${target.name} has ${target.HP} health`);
+    };
+  }
+}
+
 export function attack(options) {
   let damage = options.damage || 1;
   // Return a move object
@@ -29,7 +85,6 @@ export function attack(options) {
         } else {
           target.HP -= damage;
         }
-        console.log(`${target.name} has ${target.HP} health`);
         await target.view.onHit(0.5);
       };
     },

@@ -7,6 +7,12 @@ const status = {
 
 import { Tasks } from './tasks';
 
+const GameState = {
+  CONTINUE: 0,
+  PLAYERS_DEAD: 1,
+  ENEMIES_DEAD: 2,
+};
+
 export class GameManager {
   get activeActor() {
     return this.actors[this.turnCount % this.actors.length];
@@ -59,48 +65,31 @@ export class GameManager {
       this.turnCount += 1;
       this.actors.forEach((a) => a.updateView());
 
-      if (this.activeActor.status == status.STUNNED) {
+      // Update our state and check if the match is over
+      if (this.statusCheck() != GameState.CONTINUE) {
+        this.scene.closeMenu();
+        return;
+      }
+
+      // Skip over all stunned actors
+      while (this.activeActor.status === status.STUNNED) {
         console.log(this.activeActor.name + ' is stunned!');
         this.activeActor.status = status.ALIVE;
-        // Skips turn
         this.turnCount += 1;
       }
 
+      // Either generate our next action or open a menu to run it.
       if (this.activeActor.enemy) {
-        let randomTarget = Math.floor(Math.random() * this.actors.length);
-        while (this.actors[randomTarget].enemy) {
-          // Check statuses of all actors and end conditons
-          this.statusCheck();
-          if (this.end != 0) {
-            this.scene.closeMenu();
-            console.log('GAME OVER');
-          } else {
-            randomTarget = Math.floor(Math.random() * this.actors.length);
-          }
-        }
-        this.run(
-          this.activeActor.moves[Math.floor(Math.random())].create(
-            this.activeActor,
-            this.actors[randomTarget]
-          )
-        );
+        this.run(this.activeActor.getAIAction(this));
+        return;
       } else {
-        // Check statuses of all actors and end conditons
-        this.statusCheck();
-        if (this.end != 0) {
-          this.scene.closeMenu();
-          console.log('GAME OVER');
-        } else {
-          this.scene.openMenu(this, this.activeActor, this.run);
-        }
+        this.scene.openMenu(this, this.activeActor, this.run);
       }
     });
   }
 
   // Check and updates status of all Actors
   statusCheck() {
-    // console.log(" THIS IS A STATUS CHECK ");
-
     for (let i = 0; i < this.actors.length; i++) {
       if (this.actors[i].HP <= 0) {
         this.actors[i].status = status.DEAD;
@@ -150,17 +139,19 @@ export class GameManager {
     // Check victory / defeat
     if (this.playerCount == 0) {
       console.log('You lose!');
-      this.end = -1;
+      return GameState.PLAYERS_DEAD;
     }
 
     if (this.enemyCount == 0) {
+      console.log('You win!!!');
       this.tasks.enemiesDead = true;
+      return GameState.ENEMIES_DEAD;
     }
 
-    // Tasks check
-    if (this.tasks.checkConditions()) {
-      console.log('You win!!!');
-      this.end = 1;
-    }
+    return GameState.CONTINUE;
+    // // Tasks check
+    // if (this.tasks.checkConditions()) {
+    //   return 1;
+    // }
   }
 }

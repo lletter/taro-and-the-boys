@@ -54,12 +54,32 @@ export class Actor {
   }
 
   updateView() {
-    if(this.HP > 0){
+    // Set visibility if dead
+    if (this.HP > 0) {
       this.view.setHealth(this.HP / this.maxHP);
     } else {
-      // Remove actor
       this.view.visible = false;
     }
+  }
+
+  /**
+   * A wrapper to instantiate a move and add it to our moves.
+   * See action-generators.js, actor-prefabs for valid moves
+   * and usage.
+   */
+  addMove(type, options) {
+    this.moves.push(new type(this, options));
+  }
+
+  /**
+   * Do some AI (random) and run an action.
+   * @param gm the game manager, so AI can see all state.
+   */
+  getAIAction(gm) {
+    const friendlies = gm.actors.filter((a) => !a.enemy);
+    const move = this.moves[Math.floor(Math.random() * this.moves.length)];
+    const target = friendlies[Math.floor(Math.random() * friendlies.length)];
+    return move.generateAction(target);
   }
 
   setActionTarget(action, target) {
