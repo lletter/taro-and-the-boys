@@ -30,11 +30,16 @@ export function createHealthBar() {
   g.scale.x = 0.5;
   g.add(outerBar);
   g.add(innerBar);
-  g.setHealth = (val) => {
-    const v = Math.max(0, val);
-    innerBar.scale.x = v;
-    innerBar.position.x = val / 2 - 0.5;
-  };
+  Object.defineProperty(g, 'percent', {
+    set: function (x) {
+      const v = Math.max(0, x);
+      innerBar.scale.x = v;
+      innerBar.position.x = x / 2 - 0.5;
+    },
+    get: function () {
+      return innerBar.scale.x;
+    },
+  });
   return g;
 }
 

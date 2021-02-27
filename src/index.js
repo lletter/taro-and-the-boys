@@ -43,5 +43,3 @@ const manager = new GameManager(a, scene);
 manager.start();
 resize(config);
 animate();
-
-// window.addEventListener('resize', resize);

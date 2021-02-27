@@ -1,33 +1,6 @@
 // TODO
 // In the future, create a more modular moveslist
 
-// Global Moves List
-export const moves = {
-  ATTACK: 'attack',
-  DEFEND: 'defend',
-  SPELLS: 'spells',
-};
-
-// Global Status List
-export const status = {
-  ALIVE: 'alive',
-  DEAD: 'dead',
-  DEFEND: 'defend',
-  STUNNED: 'stunned',
-};
-
-// Character Specific Moves List
-export const heroMoves = {
-  ATTACK: 'attack',
-  DEFEND: 'defend',
-  SPELLS: 'spells',
-  // At the moment SPELLS simply stuns the target
-};
-export const enemyMoves = {
-  ATTACK: 'attack',
-  DEFEND: 'defend',
-};
-
 export class Actor {
   /**
    * @param {Object} opts
@@ -79,6 +52,7 @@ export class Actor {
     const friendlies = gm.actors.filter((a) => !a.enemy);
     const move = this.moves[Math.floor(Math.random() * this.moves.length)];
     const target = friendlies[Math.floor(Math.random() * friendlies.length)];
+    console.log('executing move', move.name, target.name);
     return move.generateAction(target);
   }
 

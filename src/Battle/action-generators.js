@@ -1,5 +1,6 @@
 import { TARGETED, SELF_TARGETED } from './action-types';
-import gsap from 'gsap';
+import { Poo, animation as createAnimation } from '../data';
+import { Vector3 } from 'three';
 
 // Global Status List
 const status = {
@@ -22,10 +23,9 @@ class Move {
    * @param {Object} owner The object doing the move - typically the move's owner
    * @param {string} type The type of targeting the move uses see action-types.js
    */
-  constructor(owner, config) {
+  constructor(owner, options) {
     this.owner = owner;
-    this.config = config;
-    this.name = 'NULL';
+    this.name = (options && options.name) || undefined;
     this.type = SELF_TARGETED;
   }
 
@@ -51,8 +51,7 @@ export class Attack extends Move {
     super(owner, config);
     this.type = TARGETED;
     this.damage = config.damage;
-    this.name = 'Attack';
-    this.generateAction = this.generateAction.bind(this);
+    this.name = this.name || 'Attack';
   }
 
   /**
@@ -66,80 +65,73 @@ export class Attack extends Move {
       } else {
         target.HP -= this.damage;
       }
-      await target.view.onHit(0.5);
+      await this.owner.view.attackAnimation(target);
       console.log(`${target.name} has ${target.HP} health`);
     };
   }
 }
 
-export function attack(options) {
-  let damage = options.damage || 1;
-  // Return a move object
-  return {
-    name: 'Attack',
-    type: TARGETED,
-    create(source, target) {
-      return async () => {
-        if (target.status == status.DEFEND) {
-          target.HP -= damage * target.defenseMod;
-        } else {
-          target.HP -= damage;
-        }
-        await target.view.onHit(0.5);
-      };
-    },
-  };
+export class Guard extends Move {
+  constructor(owner, options) {
+    super(owner, options);
+    this.type = SELF_TARGETED;
+    this.name = this.name || 'Guard';
+  }
+
+  generateAction() {
+    return async () => {
+      this.owner.status = status.DEFEND;
+
+      // animation
+      const y = this.owner.view.position.y;
+      await createAnimation(this.owner.view.position, {
+        y: '+0.2',
+        duration: 0.2,
+        ease: 'circ.out',
+      });
+      await createAnimation(this.owner.view.position, {
+        y: y,
+        duration: 0.2,
+        ease: 'circ.in',
+      });
+    };
+  }
 }
 
-export function enemyAttack(options) {
-  let damage = options.damage || 1;
-  // Return a move object
-  return {
-    name: 'Enemy Attack',
-    type: TARGETED,
-    create(target) {
-      return async () => {
-        if (target.status == status.DEFEND) {
-          target.HP -= damage * target.defenseMod;
-        } else {
-          // target.HP -= damage * this.damageMod;
-          target.HP -= damage;
-        }
-        console.log(`${target.name} has ${target.HP} health`);
-        console.log(' THIS IS AN ENEMY ATTACK ');
-        await target.view.onHit(0.5);
-      };
-    },
-  };
-}
+export class Fling extends Move {
+  constructor(owner, config) {
+    super(owner, config);
+    this.type = TARGETED;
+    this.damage = config.damage;
+    this.name = this.name || 'Fling';
+  }
 
-export function defend() {
-  // Return a move object
-  return {
-    name: 'Defend',
-    type: SELF_TARGETED,
-    create(target) {
-      return async () => {
-        target.status = status.DEFEND;
-        await delay(1000); // Will be replaced by some animation
-      };
-    },
-  };
-}
+  generateAction(target) {
+    return async () => {
+      target.status = status.STUNNED;
+      target.HP -= this.damage;
+      console.log(`${target.name} has ${target.HP} health`);
 
-export function flingPoo(options) {
-  let damage = options.damage || 1;
-  // Return a move object
-  return {
-    name: 'Fling Poo',
-    type: TARGETED,
-    create(target) {
-      return async () => {
-        target.status = status.STUNNED;
-        target.HP -= damage;
-        console.log(`${target.name} has ${target.HP} health`);
-        await target.view.onHit(1.5);
-      };
-    },
-  };
+      // Animation
+      const projectile = Poo();
+      this.owner.view.add(projectile);
+      projectile.scale.multiplyScalar(0.3);
+      projectile.position.y = this.owner.view.size.y / 2;
+      const a = new Vector3();
+      let b = new Vector3();
+      projectile.getWorldPosition(a);
+      target.view.getWorldPosition(b);
+      b = b.sub(a);
+      b.y = target.view.size.y / 2;
+      await createAnimation(projectile.position, {
+        duration: 0.3,
+        x: `${b.x}`,
+        y: `${b.y}`,
+        z: `${b.z}`,
+        ease: 'none',
+      });
+      this.owner.view.remove(projectile);
+      await target.view.onHit(0.3);
+    };
+  }
 }

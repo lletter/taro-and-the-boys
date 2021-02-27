@@ -1,6 +1,6 @@
 import * as models from '../data';
 import { Actor } from './battleCore';
-import { Attack } from './action-generators';
+import { Attack, Guard, Fling } from './action-generators';
 
 export const Taro = new Actor({
   name: 'Taro',
@@ -9,48 +9,50 @@ export const Taro = new Actor({
   defenseMod: 0.8,
   view: models.Taro(),
 });
-Taro.addMove(Attack, { damage: 20 });
+Taro.addMove(Attack, { name: 'Slash', damage: 5 });
+Taro.addMove(Guard);
 
-// export const Monke = new Actor({
-//   name: 'Monke',
-//   HP: 100,
-//   MP: 50,
-//   moves: [
-//     generators.attack({ damage: 10 }),
-//     generators.flingPoo({ damage: 50 }),
-//     generators.defend(),
-//   ],
-//   defenseMod: 1,
-//   view: models.Monke(),
-//   enemy: false,
-// });
+export const Monke = new Actor({
+  name: 'Monke',
+  HP: 100,
+  MP: 50,
+  defenseMod: 1,
+  view: models.Monke(),
+  enemy: false,
+});
+Monke.addMove(Attack, { damage: 10 });
+Monke.addMove(Fling, { damage: 5 });
+Monke.addMove(Guard);
 
-// export const Chicken = new Actor({
-//   name: 'Chicken',
-//   HP: 100,
-//   MP: 200,
-//   moves: [generators.attack({ damage: 20 * 0.8 }), generators.defend({})],
-//   defenseMod: 0.7,
-//   enemy: false,
-//   view: models.Chicken(),
-// });
+export const Chicken = new Actor({
+  name: 'Chicken',
+  HP: 100,
+  MP: 200,
+  defenseMod: 0.7,
+  enemy: false,
+  view: models.Chicken(),
+});
+Chicken.addMove(Attack, { damage: 10 });
+Chicken.addMove(Guard, { damage: 10 });
 
-// export const Doggy = new Actor({
-//   name: 'Doggy',
-//   HP: 100,
-//   MP: 200,
-//   moves: [generators.attack({ damage: 20 * 0.5 }), generators.defend({})],
-//   defenseMod: 0.5,
-//   enemy: false,
-//   view: models.Doggy(),
-// });
+export const Doggy = new Actor({
+  name: 'Doggy',
+  HP: 100,
+  MP: 200,
+  defenseMod: 0.5,
+  enemy: false,
+  view: models.Doggy(),
+});
+Doggy.addMove(Attack, { damage: 10 });
+Doggy.addMove(Guard, { damage: 10 });
 
-// export const Booba = new Actor({
-//   name: 'Booba',
-//   moves: [generators.enemyAttack({ damage: 10 })],
-//   enemy: true,
-//   view: models.Bear(),
-// });
+export const Booba = new Actor({
+  name: 'Booba',
+  enemy: true,
+  view: models.Bear(),
+});
+Booba.addMove(Attack, { damage: 10 });
+Booba.addMove(Guard);
 
 export const Beebo = new Actor({
   name: 'Beebo',
@@ -58,3 +60,4 @@ export const Beebo = new Actor({
   view: models.Panda(),
 });
 Beebo.addMove(Attack, { damage: 10 });
+Beebo.addMove(Guard);
