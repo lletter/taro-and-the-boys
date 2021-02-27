@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+=======
+>>>>>>> 1882f35e3900242e17621776cf66a45690e5e03b
 const path = require('path');
 const webpack = require('webpack');
 
@@ -17,10 +20,13 @@ module.exports = {
         type: 'asset/resource',
       },
       {
+<<<<<<< HEAD
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
+=======
+>>>>>>> 1882f35e3900242e17621776cf66a45690e5e03b
         test: /\.(woff|woff2|eot|ttf|svg)$/,
         type: 'asset/resource',
       },
@@ -32,8 +38,13 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
+<<<<<<< HEAD
   },
   plugins: [new MiniCssExtractPlugin(), new HtmlWebpackPlugin()],
+=======
+    publicPath: '',
+  },
+>>>>>>> 1882f35e3900242e17621776cf66a45690e5e03b
   devServer: {
     historyApiFallback: true,
     contentBase: path.join(__dirname, 'dist'),
