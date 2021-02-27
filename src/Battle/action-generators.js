@@ -135,3 +135,11 @@ export class Fling extends Move {
     };
   }
 }
+
+export class Stunned extends Move {
+  generateAction() {
+    return async () => {
+      await delay(1000);
+    };
+  }
+}

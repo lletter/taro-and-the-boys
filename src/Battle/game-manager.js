@@ -1,12 +1,11 @@
+import { Tasks } from './tasks';
+
 const status = {
   ALIVE: 'alive',
   DEAD: 'dead',
   DEFEND: 'defend',
   STUNNED: 'stunned',
 };
-
-import { Tasks } from './tasks';
-
 const GameState = {
   CONTINUE: 0,
   PLAYERS_DEAD: 1,
@@ -63,6 +62,7 @@ export class GameManager {
 
     action().then(() => {
       this.turnCount += 1;
+      this.scene.update(this);
       this.actors.forEach((a) => a.updateView());
 
       // Update our state and check if the match is over
@@ -75,7 +75,7 @@ export class GameManager {
       while (this.activeActor.status === status.STUNNED) {
         console.log(this.activeActor.name + ' is stunned!');
         this.activeActor.status = status.ALIVE;
-        this.turnCount += 1;
+        this.turnCount++;
       }
 
       // Either generate our next action or open a menu to run it.

@@ -2,6 +2,7 @@ import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
 import { TARGETED } from './action-types';
 import Ground from '../data/Ground';
+import { Arrow } from '../data';
 
 const config = {
   allyPositions: [
@@ -29,6 +30,10 @@ export class BattleScene extends Scene {
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
+    this.arrow = Arrow();
+    this.arrow.scale.multiplyScalar(0.5);
+    this.arrow.material.depthWrite = false;
+    this.add(this.arrow);
 
     // The menu stack. Don't remove the root menu, it's buggy.
     // Sub-menu adds menus onto the menu stack
@@ -46,6 +51,15 @@ export class BattleScene extends Scene {
         this.setActive(this.menus[this.menus.length - 1], true);
       }
     });
+  }
+
+  /**
+   * Update the view of the scene based on gamemanager state
+   * Move the current arrow indicator, etc
+   */
+  update(gm) {
+    gm.activeActor.view.getWorldPosition(this.arrow.position);
+    this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
   }
 
   createMenu(root) {
@@ -150,6 +164,11 @@ export class BattleScene extends Scene {
         allies += 1;
       }
     }
+
+    actors[0].view.sprite.onload.push(() => {
+      actors[0].view.getWorldPosition(this.arrow.position);
+      this.arrow.position.y += actors[0].view.size.y + 0.3;
+    });
   }
 
   updateUI() {}

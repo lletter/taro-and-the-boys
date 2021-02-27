@@ -28,6 +28,7 @@ class View extends Group {
     this.health = healthbar;
     this.add(sprite);
     this.add(healthbar);
+    this.onload = [];
   }
 
   setHealth(num) {
@@ -92,6 +93,7 @@ class View extends Group {
     this.size = new Vector3();
     this.bbox.getSize(this.size);
     this.health.position.y = this.bbox.max.y + 0.1;
+    this.onload && this.onload.forEach((handler) => handler());
   }
 }
 
@@ -101,7 +103,7 @@ export const instantiate = (options) => {
   const sprite = loadSprite(url);
   const health = createHealthBar();
   const group = new View(sprite, health);
-  sprite.onload = () => group.handleSpriteLoaded();
+  sprite.onload.push(() => group.handleSpriteLoaded());
 
   scale && sprite.scale.multiplyScalar(scale);
   return group;

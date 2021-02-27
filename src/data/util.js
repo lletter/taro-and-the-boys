@@ -2,20 +2,21 @@ import { SpriteMaterial, Group, Sprite, TextureLoader } from 'three';
 
 const loader = new TextureLoader();
 export function loadSprite(url) {
-  const g = new Group();
+  const sprite = new Group();
+  sprite.onload = [];
 
   function onload(data) {
     s.scale.y = data.image.height / data.image.width;
     s.position.y = s.scale.y / 2;
-    console.log('done', g.onload);
-    g.onload && g.onload(data);
+    sprite.onload.forEach((handler) => handler());
   }
 
   const map = loader.load(url, onload);
   const mat = new SpriteMaterial({ map: map });
   const s = new Sprite(mat);
-  g.add(s);
-  return g;
+  sprite.add(s);
+  sprite.material = mat;
+  return sprite;
 }
 
 export function createHealthBar() {
