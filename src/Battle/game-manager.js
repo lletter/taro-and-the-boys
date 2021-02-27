@@ -57,13 +57,11 @@ export class GameManager {
 
     action().then(() => {
       this.turnCount += 1;
-      this.activeActor.updateView();
       this.actors.forEach((a) => a.updateView());
 
       if (this.activeActor.status == status.STUNNED) {
         console.log(this.activeActor.name + ' is stunned!');
         this.activeActor.status = status.ALIVE;
-
         // Skips turn
         this.turnCount += 1;
       }
