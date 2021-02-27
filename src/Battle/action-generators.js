@@ -8,7 +8,7 @@ function delay(time) {
  * @param {Object} options options object
  * @param {Actor} options.damage the amount of damage
  */
-export function attackAction(options) {
+export function attack(options) {
   let damage = options.damage || 1;
   // Return a move object
   return {
@@ -16,9 +16,8 @@ export function attackAction(options) {
     type: TARGETED,
     create(target) {
       return async () => {
-        console.log(`running attack on ${target.name}...`);
         target.HP -= damage;
-        await delay(1000);
+        await delay(1000); // Will be replaced by some animation
       };
     },
   };

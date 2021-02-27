@@ -4,7 +4,6 @@ import * as Monke from '../data/Monke';
 import * as Doggy from '../data/Doggy';
 import * as Chicken from '../data/Chicken';
 import Ground from '../data/Ground';
-import { resolveConfig } from 'prettier';
 
 const config = {
   allyPositions: [

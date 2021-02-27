@@ -2,6 +2,7 @@ export class GameManager {
   get activeActor() {
     return this.actors[this.turnCount % this.actors.length];
   }
+
   constructor(actors, scene) {
     this.scene = scene;
     this.actors = actors;
@@ -17,11 +18,8 @@ export class GameManager {
 
   run(action) {
     // Ignore actions until the last one finished
-    if (this.busy) return;
     this.scene.closeMenu();
-    this.busy = true;
     action().then(() => {
-      this.busy = false;
       this.turnCount += 1;
       this.scene.openMenu(this.activeActor, this.run);
     });
