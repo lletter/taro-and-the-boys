@@ -23,27 +23,17 @@
   },
   "homepage": "https://github.com/lletter/taro-and-the-boys#readme",
   "devDependencies": {
-<<<<<<< HEAD
     "css-loader": "^5.1.0",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^8.1.0",
     "html-webpack-plugin": "^5.2.0",
     "mini-css-extract-plugin": "^1.3.9",
-=======
-    "eslint": "^7.20.0",
-    "eslint-config-prettier": "^8.1.0",
-    "html-webpack-plugin": "^5.2.0",
->>>>>>> 1882f35e3900242e17621776cf66a45690e5e03b
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0",
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
     "prettier": "^2.2.1",
-<<<<<<< HEAD
-    "react": "^17.0.1",
-=======
->>>>>>> 1882f35e3900242e17621776cf66a45690e5e03b
     "three": "^0.126.0"
   }
 }
