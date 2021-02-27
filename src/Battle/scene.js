@@ -30,8 +30,7 @@ export class BattleScene extends Scene {
     document.querySelector('.mouse-handler').addEventListener('click', () => {
       if (this.menus.length > 1) {
         this.menus.pop().remove();
-        console.log(this.menus[this.menus.length - 1]);
-        this.menus[this.menus.length - 1].style.pointerEvents = 'auto';
+        this.setActive(this.menus[this.menus.length - 1], true);
       }
     });
   }
@@ -46,6 +45,7 @@ export class BattleScene extends Scene {
 
   openMenu(gm, actor, callback) {
     this.menus[0].style.visibility = 'visible';
+    this.menus[0].style.pointerEvents = 'auto';
 
     actor.moves.forEach((move) => {
       this.createMenuItem(this.menus[0], move.name, () => {
@@ -67,7 +67,7 @@ export class BattleScene extends Scene {
 
   subMenu(choices, callback, root) {
     const menu = document.createElement('div');
-    menu.classList.add('menu');
+    menu.classList.add('menu', 'submenu');
     menu.style.transform = 'translateY(-8px)';
     choices.forEach((target) => {
       this.createMenuItem(menu, target.name, () => {
@@ -85,7 +85,7 @@ export class BattleScene extends Scene {
     menu.appendChild(div);
     div.addEventListener('click', (e) => {
       e.stopPropagation();
-      div.parentElement.style.pointerEvents = 'none';
+      this.setActive(div.parentElement, false);
       onClick(e);
     });
     return div;
@@ -97,6 +97,19 @@ export class BattleScene extends Scene {
     }
     this.menus[0].style.visibility = 'hidden';
     this.menus[0].innerHTML = '';
+  }
+
+  setActive(menu, isActive) {
+    console.log(menu);
+    if (isActive) {
+      for (let child of menu.children) {
+        child.style.pointerEvents = 'auto';
+      }
+    } else {
+      for (let child of menu.children) {
+        child.style.pointerEvents = 'none';
+      }
+    }
   }
 
   start() {
