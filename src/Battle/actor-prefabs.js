@@ -1,5 +1,5 @@
 import * as models from '../data';
-import { Actor } from './battleCore';
+import { Actor } from './actor';
 import { Attack, Guard, Fling } from './action-generators';
 
 export const Taro = new Actor({

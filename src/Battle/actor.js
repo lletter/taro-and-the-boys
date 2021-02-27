@@ -1,6 +1,3 @@
-// TODO
-// In the future, create a more modular moveslist
-
 export class Actor {
   /**
    * @param {Object} opts
