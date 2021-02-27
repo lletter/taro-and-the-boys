@@ -62,7 +62,7 @@ actors.push(
     name: 'Monke',
     HP: 90,
     MP: 50,
-    moves: [generators.attack({ damage: 20 * 2}), generators.defend({})],
+    moves: [generators.attack({ damage: 10}), generators.flingPoo({damage : 50}), generators.defend({})],
     defenseMod: 1,
     enemy: false,
   })
