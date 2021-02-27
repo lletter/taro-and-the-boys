@@ -5,6 +5,8 @@ const status = {
   STUNNED: 'stunned',
 };
 
+import { Tasks } from 'tasks';
+
 export class GameManager {
   get activeActor() {
     return this.actors[this.turnCount % this.actors.length];
@@ -19,6 +21,10 @@ export class GameManager {
     this.playerCount = 0;
     this.enemyCount = 0;
     this.end = 0;
+
+    // TODO: Add in customization parameters
+    this.tasks = Tasks();
+
   }
 
   start() {
@@ -149,6 +155,8 @@ export class GameManager {
       }
     }
 
+
+
     // Check victory / defeat 
     if (this.playerCount == 0) {
       console.log("You lose!");
@@ -156,7 +164,12 @@ export class GameManager {
     }
 
     if (this.enemyCount == 0) {
-      console.log("You win!");
+      this.tasks.enemiesDead = true;
+    }
+
+    // Tasks check
+    if(this.tasks.checkVictory()) {
+      console.log("You win!!!");
       this.end = 1;
     }
 
