@@ -12,30 +12,32 @@ export class GameManager {
   }
 
   start() {
-    this.scene.start();
+    this.scene.start(this.actors);
     this.scene.openMenu(this, this.activeActor, this.run);
-
   }
 
   run(action) {
     // Ignore actions until the last one finished
-    console.log("It is " + this.activeActor.name + "'s turn. ")
+    console.log('It is ' + this.activeActor.name + "'s turn. ");
     this.scene.closeMenu();
     action().then(() => {
       this.turnCount += 1;
+      this.activeActor.updateView();
+      this.actors.forEach((a) => a.updateView());
 
       if (this.activeActor.enemy) {
         let randomTarget = Math.floor(Math.random() * this.actors.length);
-        while(this.actors[randomTarget].enemy){
+        while (this.actors[randomTarget].enemy) {
           randomTarget = Math.floor(Math.random() * this.actors.length);
         }
-        this.run(this.activeActor.moves[Math.floor(Math.random())].create(this.actors[randomTarget]));
+        this.run(
+          this.activeActor.moves[Math.floor(Math.random())].create(
+            this.actors[randomTarget]
+          )
+        );
       } else {
         this.scene.openMenu(this, this.activeActor, this.run);
       }
-
     });
   }
-
-
 }

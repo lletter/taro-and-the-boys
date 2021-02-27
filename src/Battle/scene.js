@@ -1,18 +1,20 @@
-import { Color, GammaEncoding, Scene, Vector3 } from 'three';
+import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
 import { TARGETED } from './action-types';
-import * as Taro from '../data/Taro';
-import * as Monke from '../data/Monke';
-import * as Doggy from '../data/Doggy';
-import * as Chicken from '../data/Chicken';
 import Ground from '../data/Ground';
 
 const config = {
   allyPositions: [
-    new Vector3(-1.8, 0, 4),
-    new Vector3(-1.7, 0, 3),
-    new Vector3(-1.6, 0, 2),
-    new Vector3(-1.5, 0, 1),
+    new Vector3(-1.9, 0, 4),
+    new Vector3(-1.6, 0, 3),
+    new Vector3(-1.3, 0, 2),
+    new Vector3(-1, 0, 1),
+  ],
+  enemyPositions: [
+    new Vector3(1.9, 0, 4),
+    new Vector3(1.6, 0, 3),
+    new Vector3(1.3, 0, 2),
+    new Vector3(1, 0, 1),
   ],
 };
 
@@ -24,6 +26,7 @@ export class BattleScene extends Scene {
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
+
     this.menus = [];
     this.menus.push(document.querySelector('.actions-menu'));
 
@@ -111,24 +114,23 @@ export class BattleScene extends Scene {
     }
   }
 
-  start() {
+  start(actors) {
     this.add(Ground);
 
-    const t = Taro.instantiate();
-    t.position.copy(config.allyPositions[0]);
-    this.add(t);
-
-    const monke = Monke.instantiate();
-    monke.position.copy(config.allyPositions[1]);
-    this.add(monke);
-
-    const doggy = Doggy.instantiate();
-    doggy.position.copy(config.allyPositions[2]);
-    this.add(doggy);
-
-    const chicken = Chicken.instantiate();
-    chicken.position.copy(config.allyPositions[3]);
-    this.add(chicken);
+    let allies = 0;
+    let enemies = 0;
+    for (let i = 0; i < actors.length; i++) {
+      const actor = actors[i];
+      if (actor.enemy) {
+        actor.view.position.copy(config.enemyPositions[enemies]);
+        this.add(actor.view);
+        enemies += 1;
+      } else {
+        actor.view.position.copy(config.allyPositions[allies]);
+        this.add(actor.view);
+        allies += 1;
+      }
+    }
   }
 
   updateUI() {}

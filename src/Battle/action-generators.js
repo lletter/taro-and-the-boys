@@ -1,7 +1,4 @@
-import {
-  TARGETED,
-  SELF_TARGETED
-} from './action-types';
+import { TARGETED, SELF_TARGETED } from './action-types';
 
 // Global Status List
 const status = {
@@ -34,7 +31,7 @@ export function attack(options) {
           target.HP -= damage;
         }
         console.log(`${target.name} has ${target.HP} health`);
-        await delay(1000); // Will be replaced by some animation
+        await target.view.onHit(0.5);
       };
     },
   };
@@ -55,7 +52,7 @@ export function enemyAttack(options) {
           target.HP -= damage;
         }
         console.log(`${target.name} has ${target.HP} health`);
-        console.log(" THIS IS AN ENEMY ATTACK ");
+        console.log(' THIS IS AN ENEMY ATTACK ');
         await delay(1000); // Will be replaced by some animation
       };
     },

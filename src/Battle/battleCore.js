@@ -41,14 +41,20 @@ export class Actor {
   constructor(opts) {
     this.name = opts.name || 'Actor';
     this.HP = opts.HP || 100;
+    this.maxHP = this.HP;
     this.MP = opts.MP || 30;
     this.moves = opts.moves || [];
     this.damageMod = opts.damageMod || 1;
     this.defenseMod = opts.defenseMod || 1;
     this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
+    this.view = opts.view;
     this.target = null;
     this.action = null;
+  }
+
+  updateView() {
+    this.view.setHealth(this.HP / this.maxHP);
   }
 
   setActionTarget(action, target) {
@@ -65,7 +71,7 @@ export class Actor {
       this.target = target;
     }
 
-    console.log("Action: " + this.action + " -> " + this.target);
+    console.log('Action: ' + this.action + ' -> ' + this.target);
   }
 }
 
@@ -75,7 +81,6 @@ let players = 0;
 let enemies = 0;
 
 // function gameManager() {
-
 
 //   for (let i = 0; i < actors.length; i++) {
 //     console.log(i + " : " + actors[i].name + " : " + actors[i].status + ". HP: " + actors[i].HP);
@@ -127,37 +132,44 @@ let enemies = 0;
 
 function actionManager(actor) {
   switch (actor.action) {
-      case moves.ATTACK:
-          var DAMAGE = (actors[actor.target].status == status.DEFEND) ? 25 : 50;
-          actors[actor.target].HP -= DAMAGE;
+    case moves.ATTACK:
+      var DAMAGE = actors[actor.target].status == status.DEFEND ? 25 : 50;
+      actors[actor.target].HP -= DAMAGE;
 
-          console.log(actor.name + " attacks " + actors[actor.target].name + " for " + DAMAGE + " points!")
+      console.log(
+        actor.name +
+          ' attacks ' +
+          actors[actor.target].name +
+          ' for ' +
+          DAMAGE +
+          ' points!'
+      );
 
-          break;
-      case moves.DEFEND:
-          actor.status = status.DEFEND;
+      break;
+    case moves.DEFEND:
+      actor.status = status.DEFEND;
 
-          console.log(actor + " is defending!")
+      console.log(actor + ' is defending!');
 
-          break;
-      case moves.SPELLS:
-          actors[actor.target].STATUS = status.STUNNED;
-          break;
-      default:
-          // code block
+      break;
+    case moves.SPELLS:
+      actors[actor.target].STATUS = status.STUNNED;
+      break;
+    default:
+    // code block
   }
 }
 
 function endScreen(win) {
   if (win) {
-    console.log("You win!");
+    console.log('You win!');
   } else {
-    console.log("Game over")
+    console.log('Game over');
   }
 }
 
 function updateUI() {
-  console.log("Update")
+  console.log('Update');
   // Check for HP changes
   for (let i = 0; i < actors.length; i++) {
     if (actors[i].HP <= 0) {
@@ -168,44 +180,42 @@ function updateUI() {
   // Draw actors status
   for (let i = 0; i < actors.length; i++) {
     switch (actors[i].status) {
-      case (status.ALIVE):
+      case status.ALIVE:
         // Play IDLE animation
-        console.log(actors[i].name + " is alive!")
+        console.log(actors[i].name + ' is alive!');
 
         break;
-      case (status.DEAD):
+      case status.DEAD:
         // Play DEAD animation
 
-        console.log(actors[i].name + " has died!")
+        console.log(actors[i].name + ' has died!');
 
         break;
-      case (status.STUNNED):
+      case status.STUNNED:
         // Play STUNNED animation
 
-        console.log(actors[i].name + " has been stunned!")
+        console.log(actors[i].name + ' has been stunned!');
 
         break;
       default:
-        // code block
+      // code block
     }
   }
 
   // Remove DEAD actors
   for (let i = 0; i < actors.length; i++) {
     if (actors[i].status == status.DEAD) {
-
       if (actors[i].enemy) {
         enemies--;
       } else {
         players--;
       }
 
-      console.log("Removing " + actors[i].name);
+      console.log('Removing ' + actors[i].name);
       actors.splice(i, 1);
       i--;
     }
   }
 }
-
 
 // init();
