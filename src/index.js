@@ -38,8 +38,84 @@ function resize(dim) {
   camera.updateProjectionMatrix();
 }
 
+<<<<<<< HEAD
 const a = Object.values(actors);
 const manager = new GameManager(a, scene);
+=======
+const actors = [];
+
+// actors.push(new Actor('Hero', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Monke', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Chicken', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Doggy', 150, 150, moves, 1.1, 0.9));
+
+// Players
+actors.push(
+  new Actor({
+    name: 'Hero',
+    HP: 150,
+    MP: 150,
+    moves: [generators.attack({ damage: 20 * 1 }), generators.defend({})],
+    defenseMod: 0.8,
+    enemy: false,
+  })
+)
+actors.push(
+  new Actor({
+    name: 'Monke',
+    HP: 90,
+    MP: 50,
+    moves: [
+      generators.attack({ damage: 10 }),
+      generators.flingPoo({ damage: 50 }),
+      generators.defend({}),
+    ],
+    defenseMod: 1,
+    enemy: false,
+  })
+);
+
+actors.push(
+  new Actor({
+    name: 'Chicken',
+    HP: 75,
+    MP: 200,
+    moves: [generators.attack({ damage: 20 * 0.8 }), generators.defend({})],
+    defenseMod: 0.7,
+    enemy: false,
+  })
+);
+
+actors.push(
+  new Actor({
+    name: 'Doggy',
+    HP: 75,
+    MP: 200,
+    moves: [generators.attack({ damage: 20 * 0.5 }), generators.defend({})],
+    defenseMod: 0.5,
+    enemy: false,
+  })
+);
+
+// Enemies
+actors.push(
+  new Actor({
+    name: 'Booba',
+    moves: [generators.enemyAttack({ damage: 10 })],
+    enemy: true,
+  })
+);
+
+// actors.push(
+//   new Actor({
+//     name: 'Beebo',
+//     moves: [generators.attack({ damage: 10 })],
+//     enemy: true,
+//   })
+// );
+
+const manager = new GameManager(actors, scene);
+>>>>>>> battleCore
 manager.start();
 resize(config);
 animate();

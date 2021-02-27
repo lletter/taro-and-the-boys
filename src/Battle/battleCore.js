@@ -2,14 +2,14 @@
 // In the future, create a more modular moveslist
 
 // Global Moves List
-const moves = {
+export const moves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
   SPELLS: 'spells',
 };
 
 // Global Status List
-const status = {
+export const status = {
   ALIVE: 'alive',
   DEAD: 'dead',
   DEFEND: 'defend',
@@ -17,13 +17,13 @@ const status = {
 };
 
 // Character Specific Moves List
-const heroMoves = {
+export const heroMoves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
   SPELLS: 'spells',
   // At the moment SPELLS simply stuns the target
 };
-const enemyMoves = {
+export const enemyMoves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
 };
@@ -178,23 +178,23 @@ function updateUI() {
   }
 
   // Draw actors status
-  for (let i = 0; i < actors.length; i++) {
-    switch (actors[i].status) {
+  for (let i = 0; i < this.actors.length; i++) {
+    switch (this.actors[i].status) {
       case status.ALIVE:
         // Play IDLE animation
-        console.log(actors[i].name + ' is alive!');
+        console.log(this.actors[i].name + ' is alive!');
 
         break;
       case status.DEAD:
         // Play DEAD animation
 
-        console.log(actors[i].name + ' has died!');
+        console.log(this.actors[i].name + ' has died!');
 
         break;
       case status.STUNNED:
         // Play STUNNED animation
 
-        console.log(actors[i].name + ' has been stunned!');
+        console.log(this.actors[i].name + ' has been stunned!');
 
         break;
       default:
