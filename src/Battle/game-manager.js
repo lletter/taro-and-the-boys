@@ -5,7 +5,7 @@ const status = {
   STUNNED: 'stunned',
 };
 
-import { Tasks } from 'tasks';
+import { Tasks } from './tasks';
 
 export class GameManager {
   get activeActor() {
@@ -23,7 +23,7 @@ export class GameManager {
     this.end = 0;
 
     // TODO: Add in customization parameters
-    this.tasks = Tasks();
+    this.tasks = new Tasks();
 
   }
 
@@ -168,7 +168,7 @@ export class GameManager {
     }
 
     // Tasks check
-    if(this.tasks.checkVictory()) {
+    if(this.tasks.checkConditions()) {
       console.log("You win!!!");
       this.end = 1;
     }
