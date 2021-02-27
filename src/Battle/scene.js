@@ -100,7 +100,6 @@ export class BattleScene extends Scene {
   }
 
   setActive(menu, isActive) {
-    console.log(menu);
     if (isActive) {
       for (let child of menu.children) {
         child.style.pointerEvents = 'auto';
