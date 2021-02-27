@@ -33,7 +33,10 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  plugins: [new MiniCssExtractPlugin(), new HtmlWebpackPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    new HtmlWebpackPlugin({ template: 'src/index.html' }),
+  ],
   devServer: {
     historyApiFallback: true,
     contentBase: path.join(__dirname, 'dist'),
