@@ -4,6 +4,7 @@ import * as Monke from '../data/Monke';
 import * as Doggy from '../data/Doggy';
 import * as Chicken from '../data/Chicken';
 import Ground from '../data/Ground';
+import { resolveConfig } from 'prettier';
 
 const config = {
   allyPositions: [
@@ -18,7 +19,28 @@ export class BattleScene extends Scene {
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
+    this.actionMenu = document.querySelector('.actions-menu');
+    this.actionMenu.style.visibility = 'hidden';
   }
+
+  openMenu(actor, callback) {
+    this.actionMenu.style.visibility = 'visible';
+    this.actionMenu.innerHTML = '';
+    actor.movesList.forEach((move) => {
+      const div = document.createElement('div');
+      div.classList.add('action-item');
+      div.innerHTML = move.name;
+      this.actionMenu.appendChild(div);
+      div.addEventListener('click', () => {
+        callback(move.create(actor));
+      });
+    });
+  }
+
+  closeMenu() {
+    this.actionMenu.style.visibility = 'hidden';
+  }
+
   start() {
     this.add(Ground);
 
@@ -38,4 +60,6 @@ export class BattleScene extends Scene {
     chicken.position.copy(config.allyPositions[3]);
     this.add(chicken);
   }
+
+  updateUI() {}
 }

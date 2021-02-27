@@ -1,5 +1,8 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
-import { BattleScene } from './Battle';
+import { BattleScene } from './Battle/scene';
+import { GameManager } from './Battle/game-manager';
+import { Actor } from './Battle/battleCore';
+import { attackAction } from './Battle/actions';
 import './style.css';
 import config from './config';
 
@@ -36,7 +39,16 @@ function resize(dim) {
   camera.updateProjectionMatrix();
 }
 
-scene.start(config);
+const attack = attackAction({ damage: 10 });
+const moves = [attack];
+
+const actors = [];
+actors.push(new Actor('Hero', 150, 150, moves, 1.1, 0.9));
+actors.push(new Actor('Monke', 150, 150, moves, 1.1, 0.9));
+actors.push(new Actor('Chicken', 150, 150, moves, 1.1, 0.9));
+actors.push(new Actor('Doggy', 150, 150, moves, 1.1, 0.9));
+const manager = new GameManager(actors, scene);
+manager.start();
 resize(config);
 animate();
 
