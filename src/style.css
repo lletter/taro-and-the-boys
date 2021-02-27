@@ -5,4 +5,57 @@ canvas {
   padding: 0;
   height: 100%;
   width: 100%;
+  display: flex;
+  font-family: sans-serif;
+}
+
+#root {
+  position: relative;
+  margin: auto;
+  width: 1024px;
+  height: 768px;
+  box-shadow: 1px 1px 16px 1px gray;
+}
+
+.menu {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  position: absolute;
+  box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.1);
+}
+
+#tasks {
+  flex-direction: column;
+  text-align: center;
+  left: 8px;
+  top: 8px;
+  width: 160px;
+  height: 300px;
+}
+
+.tasks-header {
+  margin-bottom: 1rem;
+}
+
+.actions-menu {
+  width: calc(100% - 32px);
+  height: 150px;
+  left: 16px;
+  bottom: 16px;
+}
+
+.action-item {
+  margin: 4px;
+  flex-basis: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
