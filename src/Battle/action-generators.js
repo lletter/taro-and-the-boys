@@ -17,6 +17,7 @@ export function attack(options) {
     create(target) {
       return async () => {
         target.HP -= damage;
+        console.log(`${target.name} has ${target.HP} health`);
         await delay(1000); // Will be replaced by some animation
       };
     },

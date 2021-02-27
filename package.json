@@ -33,6 +33,7 @@
     "webpack-dev-server": "^3.11.2"
   },
   "dependencies": {
+    "@popperjs/core": "^2.8.6",
     "prettier": "^2.2.1",
     "three": "^0.126.0"
   }

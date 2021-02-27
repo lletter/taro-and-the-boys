@@ -5,7 +5,6 @@ canvas {
   padding: 0;
   height: 100%;
   width: 100%;
-  display: flex;
   font-family: sans-serif;
 }
 
@@ -26,6 +25,8 @@ canvas {
   justify-content: center;
   position: absolute;
   box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.1);
+  min-width: 256px;
+  min-height: 150px;
 }
 
 #tasks {
@@ -50,7 +51,7 @@ canvas {
 
 .action-item {
   margin: 4px;
-  flex-basis: 25%;
+  flex: 1 1 100%;
   display: flex;
   align-items: center;
   justify-content: center;

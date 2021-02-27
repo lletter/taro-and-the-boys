@@ -13,7 +13,7 @@ export class GameManager {
 
   start() {
     this.scene.start();
-    this.scene.openMenu(this.activeActor, this.run);
+    this.scene.openMenu(this, this.activeActor, this.run);
   }
 
   run(action) {
@@ -21,7 +21,7 @@ export class GameManager {
     this.scene.closeMenu();
     action().then(() => {
       this.turnCount += 1;
-      this.scene.openMenu(this.activeActor, this.run);
+      this.scene.openMenu(this, this.activeActor, this.run);
     });
   }
 }

@@ -1,4 +1,6 @@
-import { Color, Scene, Vector3 } from 'three';
+import { Color, GammaEncoding, Scene, Vector3 } from 'three';
+import { createPopper } from '@popperjs/core';
+import { TARGETED } from './action-types';
 import * as Taro from '../data/Taro';
 import * as Monke from '../data/Monke';
 import * as Doggy from '../data/Doggy';
@@ -18,26 +20,66 @@ export class BattleScene extends Scene {
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
-    this.actionMenu = document.querySelector('.actions-menu');
-    this.actionMenu.style.visibility = 'hidden';
+    this.menuRoot = document.querySelector('.actions-menu');
+    this.menus = [];
   }
 
-  openMenu(actor, callback) {
-    this.actionMenu.style.visibility = 'visible';
-    this.actionMenu.innerHTML = '';
-    actor.movesList.forEach((move) => {
-      const div = document.createElement('div');
-      div.classList.add('action-item');
-      div.innerHTML = move.name;
-      this.actionMenu.appendChild(div);
-      div.addEventListener('click', () => {
-        callback(move.create(actor));
+  createMenu(root) {
+    const div = document.createElement('div');
+    div.classList.add('menu');
+    root.appendChild(div);
+    createPopper(root, div, { placement: 'right' });
+    return div;
+  }
+
+  openMenu(gm, actor, callback) {
+    this.menuRoot.style.visibility = 'visible';
+
+    actor.moves.forEach((move) => {
+      this.createMenuItem(this.menuRoot, move.name, () => {
+        switch (move.type) {
+          case TARGETED: {
+            const enemies = gm.actors.filter((a) => a.enemy);
+            const cb = (target) => callback(move.create(target));
+            this.subMenu(enemies, cb, this.menuRoot);
+            return;
+          }
+          default: {
+            callback(move.create(actor));
+            return;
+          }
+        }
       });
     });
   }
 
+  subMenu(choices, callback, root) {
+    const menu = document.createElement('div');
+    menu.classList.add('menu');
+    choices.forEach((target) => {
+      this.createMenuItem(menu, target.name, () => {
+        callback(target);
+      });
+    });
+    root.appendChild(menu);
+  }
+
+  createMenuItem(menu, label, onClick) {
+    const div = document.createElement('div');
+    div.classList.add('action-item');
+    div.innerHTML = label;
+    menu.appendChild(div);
+    div.addEventListener('click', (e) => {
+      div.style.pointerEvents = 'none';
+      onClick(e);
+    });
+    return div;
+  }
+
   closeMenu() {
-    this.actionMenu.style.visibility = 'hidden';
+    this.menuRoot.style.visibility = 'hidden';
+    this.menuRoot.innerHTML = '';
+    this.menus.forEach((menu) => menu.destroy());
   }
 
   start() {
