@@ -52,7 +52,7 @@ export function enemyAttack(options) {
         }
         console.log(`${target.name} has ${target.HP} health`);
         console.log(' THIS IS AN ENEMY ATTACK ');
-        await delay(1000); // Will be replaced by some animation
+        await target.view.onHit(0.5);
       };
     },
   };
@@ -83,7 +83,7 @@ export function flingPoo(options) {
         target.status = status.STUNNED;
         target.HP -= damage;
         console.log(`${target.name} has ${target.HP} health`);
-        await delay(1000); // Will be replaced by some animation
+        await target.view.onHit(1.5);
       };
     },
   };

@@ -54,7 +54,12 @@ export class Actor {
   }
 
   updateView() {
-    this.view.setHealth(this.HP / this.maxHP);
+    if(this.HP > 0){
+      this.view.setHealth(this.HP / this.maxHP);
+    } else {
+      // Remove actor
+      this.view.visible = false;
+    }
   }
 
   setActionTarget(action, target) {
