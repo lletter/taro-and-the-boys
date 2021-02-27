@@ -40,6 +40,56 @@ function resize(dim) {
 }
 
 const actors = [];
+
+// actors.push(new Actor('Hero', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Monke', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Chicken', 150, 150, moves, 1.1, 0.9));
+// actors.push(new Actor('Doggy', 150, 150, moves, 1.1, 0.9));
+
+actors.push(
+  new Actor({
+    name: 'Hero',
+    HP: 150,
+    MP: 150,
+    moves: [generators.attack({ damage: 20 * 1 }), generators.defend({})],
+    defenseMod: 0.8,
+    enemy: false,
+  })
+)
+
+actors.push(
+  new Actor({
+    name: 'Monke',
+    HP: 90,
+    MP: 50,
+    moves: [generators.attack({ damage: 20 * 2}), generators.defend({})],
+    defenseMod: 1,
+    enemy: false,
+  })
+)
+
+actors.push(
+  new Actor({
+    name: 'Chicken',
+    HP: 75,
+    MP: 200,
+    moves: [generators.attack({ damage: 20 * 0.8}), generators.defend({})],
+    defenseMod: 0.7,
+    enemy: false,
+  })
+)
+
+actors.push(
+  new Actor({
+    name: 'Doggy',
+    HP: 75,
+    MP: 200,
+    moves: [generators.attack({ damage: 20 * 0.5}), generators.defend({})],
+    defenseMod: 0.5,
+    enemy: false,
+  })
+)
+
 actors.push(
   new Actor({
     name: 'Taro',
@@ -53,6 +103,8 @@ actors.push(
     enemy: true,
   })
 );
+
+
 const manager = new GameManager(actors, scene);
 manager.start();
 resize(config);

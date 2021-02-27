@@ -59,25 +59,31 @@ export class Actor {
     // Check if valid action
     if (moves.action != null) {
       this.action = action;
-      return 0;
     }
 
-    for (let i = 0; i < actors.length; i++) {
-      if (actors[i].name == target) {
-        this.target = i;
-        return 0;
-      }
+    if (target < actors.length) {
+      this.target = target;
     }
 
-    // Error
-    return -1;
+    console.log("Action: " + this.action + " -> " + this.target);
   }
 }
 
 let actors = [];
 let turnCount = 0;
 
+let players = 0;
+let enemies = 0;
+
 function gameManager() {
+
+
+  for (let i = 0; i < actors.length; i++) {
+    console.log(i + " : " + actors[i].name + " : " + actors[i].status + ". HP: " + actors[i].HP);
+  }
+  console.log("Players alive: " + players);
+  console.log("Enemies alive: " + enemies);
+
   let activeActor = turnCount % actors.length;
 
   // Wait for action
@@ -85,8 +91,7 @@ function gameManager() {
 
   while (!validAction && actors.status != status.STUNNED) {
     // Get action from UI
-    //
-    // TODO: getUIaction();
+
     actors[activeActor].setActionTarget(getUIaction());
 
     if (
@@ -103,6 +108,17 @@ function gameManager() {
   // Reflect Status of Actors back to UI
   updateUI();
 
+  // Check victory / defeat
+  if (players == 0) {
+    endScreen(false);
+    return;
+  }
+
+  if (enemies == 0) {
+    endScreen(true);
+    return;
+  }
+
   // Next turn
   turnCount++;
 
@@ -112,33 +128,40 @@ function gameManager() {
 
 function actionManager(actor) {
   switch (actor.action) {
-    case moves.ATTACK:
-      var DAMAGE = actors[actor.target].status == status.DEFEND ? 25 : 50;
-      actors[actor.target].HP -= DAMAGE;
-      break;
-    case moves.DEFEND:
-      actor.status = status.DEFEND;
-      break;
-    case moves.SPELLS:
-      actors[actor.target].STATUS = status.STUNNED;
-      break;
-    default:
-    // code block
+      case moves.ATTACK:
+          var DAMAGE = (actors[actor.target].status == status.DEFEND) ? 25 : 50;
+          actors[actor.target].HP -= DAMAGE;
+
+          console.log(actor.name + " attacks " + actors[actor.target].name + " for " + DAMAGE + " points!")
+
+          break;
+      case moves.DEFEND:
+          actor.status = status.DEFEND;
+
+          console.log(actor + " is defending!")
+
+          break;
+      case moves.SPELLS:
+          actors[actor.target].STATUS = status.STUNNED;
+          break;
+      default:
+          // code block
   }
 }
 
-function init() {
-  // Add in actors
-  actors.push(new Actor('Hero', 150, 150, heroMoves, 1.1, 0.9));
-  actors.push(new Actor('Enemy', 50, 50, enemyMoves));
-
-  gameManager();
+function endScreen(win) {
+  if (win) {
+    console.log("You win!");
+  } else {
+    console.log("Game over")
+  }
 }
 
 function updateUI() {
+  console.log("Update")
   // Check for HP changes
   for (let i = 0; i < actors.length; i++) {
-    if (actors[i].HP < 0) {
+    if (actors[i].HP <= 0) {
       actors[i].status = status.DEAD;
     }
   }
@@ -146,35 +169,44 @@ function updateUI() {
   // Draw actors status
   for (let i = 0; i < actors.length; i++) {
     switch (actors[i].status) {
-      case moves.ALIVE:
+      case (status.ALIVE):
         // Play IDLE animation
+        console.log(actors[i].name + " is alive!")
 
         break;
-      case moves.DEAD:
+      case (status.DEAD):
         // Play DEAD animation
 
+        console.log(actors[i].name + " has died!")
+
         break;
-      case moves.STUNNED:
+      case (status.STUNNED):
         // Play STUNNED animation
+
+        console.log(actors[i].name + " has been stunned!")
 
         break;
       default:
-      // code block
+        // code block
     }
   }
 
   // Remove DEAD actors
   for (let i = 0; i < actors.length; i++) {
     if (actors[i].status == status.DEAD) {
-      actors.remove(actors[i]);
+
+      if (actors[i].enemy) {
+        enemies--;
+      } else {
+        players--;
+      }
+
+      console.log("Removing " + actors[i].name);
+      actors.splice(i, 1);
       i--;
     }
   }
 }
 
-function getUIaction() {
-  // TODO
-  return 0;
-}
 
 // init();

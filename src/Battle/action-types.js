@@ -1,1 +1,2 @@
 export const TARGETED = 'ACTIONS_TARGETED';
+export const SELF_TARGETED = 'ACTIONS_SELF_TARGETED';
