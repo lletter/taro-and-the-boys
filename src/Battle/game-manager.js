@@ -80,6 +80,7 @@ export class GameManager {
         }
         this.run(
           this.activeActor.moves[Math.floor(Math.random())].create(
+            this.activeActor,
             this.actors[randomTarget]
           )
         );

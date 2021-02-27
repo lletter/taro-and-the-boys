@@ -55,7 +55,7 @@ export class BattleScene extends Scene {
         switch (move.type) {
           case TARGETED: {
             const enemies = gm.actors.filter((a) => a.enemy);
-            const cb = (target) => callback(move.create(target));
+            const cb = (target) => callback(move.create(actor, target));
             this.subMenu(enemies, cb, this.menus[0]);
             return;
           }
