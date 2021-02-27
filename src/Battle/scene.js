@@ -90,7 +90,7 @@ export class BattleScene extends Scene {
     });
     return div;
   }
-
+  
   closeMenu() {
     while (this.menus.length > 1) {
       this.menus.pop().remove();
@@ -100,7 +100,7 @@ export class BattleScene extends Scene {
   }
 
   setActive(menu, isActive) {
-    console.log(menu);
+    // console.log(menu);
     if (isActive) {
       for (let child of menu.children) {
         child.style.pointerEvents = 'auto';

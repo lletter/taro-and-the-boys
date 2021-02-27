@@ -46,6 +46,7 @@ const actors = [];
 // actors.push(new Actor('Chicken', 150, 150, moves, 1.1, 0.9));
 // actors.push(new Actor('Doggy', 150, 150, moves, 1.1, 0.9));
 
+// Players
 actors.push(
   new Actor({
     name: 'Hero',
@@ -56,7 +57,6 @@ actors.push(
     enemy: false,
   })
 )
-
 actors.push(
   new Actor({
     name: 'Monke',
@@ -67,7 +67,6 @@ actors.push(
     enemy: false,
   })
 )
-
 actors.push(
   new Actor({
     name: 'Chicken',
@@ -78,7 +77,6 @@ actors.push(
     enemy: false,
   })
 )
-
 actors.push(
   new Actor({
     name: 'Doggy',
@@ -90,6 +88,7 @@ actors.push(
   })
 )
 
+// Enemies
 actors.push(
   new Actor({
     name: 'Booba',
@@ -97,13 +96,15 @@ actors.push(
     enemy: true,
   })
 );
-actors.push(
-  new Actor({
-    name: 'Beebo',
-    moves: [generators.attack({ damage: 10 })],
-    enemy: true,
-  })
-);
+
+// actors.push(
+//   new Actor({
+//     name: 'Beebo',
+//     moves: [generators.attack({ damage: 10 })],
+//     enemy: true,
+//   })
+// );
+
 const manager = new GameManager(actors, scene);
 manager.start();
 resize(config);
