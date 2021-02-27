@@ -17,11 +17,23 @@ const config = {
 };
 
 export class BattleScene extends Scene {
+  get menuClosed() {
+    return this.menus[0].style.visibility === 'hidden';
+  }
+
   constructor() {
     super();
     this.background = new Color(0xe6f9ff);
-    this.menuRoot = document.querySelector('.actions-menu');
     this.menus = [];
+    this.menus.push(document.querySelector('.actions-menu'));
+
+    document.querySelector('.mouse-handler').addEventListener('click', () => {
+      if (this.menus.length > 1) {
+        this.menus.pop().remove();
+        console.log(this.menus[this.menus.length - 1]);
+        this.menus[this.menus.length - 1].style.pointerEvents = 'auto';
+      }
+    });
   }
 
   createMenu(root) {
@@ -33,15 +45,15 @@ export class BattleScene extends Scene {
   }
 
   openMenu(gm, actor, callback) {
-    this.menuRoot.style.visibility = 'visible';
+    this.menus[0].style.visibility = 'visible';
 
     actor.moves.forEach((move) => {
-      this.createMenuItem(this.menuRoot, move.name, () => {
+      this.createMenuItem(this.menus[0], move.name, () => {
         switch (move.type) {
           case TARGETED: {
             const enemies = gm.actors.filter((a) => a.enemy);
             const cb = (target) => callback(move.create(target));
-            this.subMenu(enemies, cb, this.menuRoot);
+            this.subMenu(enemies, cb, this.menus[0]);
             return;
           }
           default: {
@@ -56,12 +68,14 @@ export class BattleScene extends Scene {
   subMenu(choices, callback, root) {
     const menu = document.createElement('div');
     menu.classList.add('menu');
+    menu.style.transform = 'translateY(-8px)';
     choices.forEach((target) => {
       this.createMenuItem(menu, target.name, () => {
         callback(target);
       });
     });
     root.appendChild(menu);
+    this.menus.push(menu);
   }
 
   createMenuItem(menu, label, onClick) {
@@ -70,16 +84,19 @@ export class BattleScene extends Scene {
     div.innerHTML = label;
     menu.appendChild(div);
     div.addEventListener('click', (e) => {
-      div.style.pointerEvents = 'none';
+      e.stopPropagation();
+      div.parentElement.style.pointerEvents = 'none';
       onClick(e);
     });
     return div;
   }
 
   closeMenu() {
-    this.menuRoot.style.visibility = 'hidden';
-    this.menuRoot.innerHTML = '';
-    this.menus.forEach((menu) => menu.destroy());
+    while (this.menus.length > 1) {
+      this.menus.pop().remove();
+    }
+    this.menus[0].style.visibility = 'hidden';
+    this.menus[0].innerHTML = '';
   }
 
   start() {

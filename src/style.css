@@ -63,3 +63,10 @@ canvas {
 .action-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
+
+.mouse-handler {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  pointer-events: auto;
+}
