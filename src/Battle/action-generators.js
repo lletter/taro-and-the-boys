@@ -22,12 +22,11 @@ export function attack(options) {
   return {
     name: 'Attack',
     type: TARGETED,
-    create(target) {
+    create(source, target) {
       return async () => {
         if (target.status == status.DEFEND) {
           target.HP -= damage * target.defenseMod;
         } else {
-          // target.HP -= damage * this.damageMod;
           target.HP -= damage;
         }
         console.log(`${target.name} has ${target.HP} health`);
