@@ -55,40 +55,44 @@ actors.push(
     defenseMod: 0.8,
     enemy: false,
   })
-)
+);
 
 actors.push(
   new Actor({
     name: 'Monke',
     HP: 90,
     MP: 50,
-    moves: [generators.attack({ damage: 10}), generators.flingPoo({damage : 50}), generators.defend({})],
+    moves: [
+      generators.attack({ damage: 10 }),
+      generators.flingPoo({ damage: 50 }),
+      generators.defend({}),
+    ],
     defenseMod: 1,
     enemy: false,
   })
-)
+);
 
 actors.push(
   new Actor({
     name: 'Chicken',
     HP: 75,
     MP: 200,
-    moves: [generators.attack({ damage: 20 * 0.8}), generators.defend({})],
+    moves: [generators.attack({ damage: 20 * 0.8 }), generators.defend({})],
     defenseMod: 0.7,
     enemy: false,
   })
-)
+);
 
 actors.push(
   new Actor({
     name: 'Doggy',
     HP: 75,
     MP: 200,
-    moves: [generators.attack({ damage: 20 * 0.5}), generators.defend({})],
+    moves: [generators.attack({ damage: 20 * 0.5 }), generators.defend({})],
     defenseMod: 0.5,
     enemy: false,
   })
-)
+);
 
 actors.push(
   new Actor({
@@ -97,10 +101,6 @@ actors.push(
     enemy: true,
   })
 );
-<<<<<<< HEAD
-
-
-=======
 actors.push(
   new Actor({
     name: 'Beebo',
@@ -108,7 +108,6 @@ actors.push(
     enemy: true,
   })
 );
->>>>>>> b183ea6752ed5ba3006bec279943420af86e7b06
 const manager = new GameManager(actors, scene);
 manager.start();
 resize(config);
