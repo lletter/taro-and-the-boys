@@ -33,7 +33,7 @@ export class Actor {
    * @param {Object} opts
    * @param {Number} opts.HP HP
    * @param {Number} opts.MP MP
-   * @param {Object} opts.Moves Movelist
+   * @param {Object} opts.moves Movelist
    * @param {Number} opts.damageMod
    * @param {Number} opts.defenseMod
    * @param {Boolean} opts.enemy
@@ -71,60 +71,59 @@ export class Actor {
 
 let actors = [];
 let turnCount = 0;
-
 let players = 0;
 let enemies = 0;
 
-function gameManager() {
+// function gameManager() {
 
 
-  for (let i = 0; i < actors.length; i++) {
-    console.log(i + " : " + actors[i].name + " : " + actors[i].status + ". HP: " + actors[i].HP);
-  }
-  console.log("Players alive: " + players);
-  console.log("Enemies alive: " + enemies);
+//   for (let i = 0; i < actors.length; i++) {
+//     console.log(i + " : " + actors[i].name + " : " + actors[i].status + ". HP: " + actors[i].HP);
+//   }
+//   console.log("Players alive: " + players);
+//   console.log("Enemies alive: " + enemies);
 
-  let activeActor = turnCount % actors.length;
+//   let activeActor = turnCount % actors.length;
 
-  // Wait for action
-  let validAction = false;
+//   // Wait for action
+//   let validAction = false;
 
-  while (!validAction && actors.status != status.STUNNED) {
-    // Get action from UI
+//   while (!validAction && actors.status != status.STUNNED) {
+//     // Get action from UI
 
-    actors[activeActor].setActionTarget(getUIaction());
+//     actors[activeActor].setActionTarget(getUIaction());
 
-    if (
-      actors[activeActor].action != null &&
-      actors[activeActor].target != null
-    ) {
-      validAction = true;
-    }
-  }
+//     if (
+//       actors[activeActor].action != null &&
+//       actors[activeActor].target != null
+//     ) {
+//       validAction = true;
+//     }
+//   }
 
-  // Execute Action
-  actionManager(actors[activeActor]);
+//   // Execute Action
+//   actionManager(actors[activeActor]);
 
-  // Reflect Status of Actors back to UI
-  updateUI();
+//   // Reflect Status of Actors back to UI
+//   updateUI();
 
-  // Check victory / defeat
-  if (players == 0) {
-    endScreen(false);
-    return;
-  }
+//   // Check victory / defeat
+//   if (players == 0) {
+//     endScreen(false);
+//     return;
+//   }
 
-  if (enemies == 0) {
-    endScreen(true);
-    return;
-  }
+//   if (enemies == 0) {
+//     endScreen(true);
+//     return;
+//   }
 
-  // Next turn
-  turnCount++;
+//   // Next turn
+//   turnCount++;
 
-  // Loop
-  gameManager();
-}
+//   // Loop
+//   gameManager();
+// }
 
 function actionManager(actor) {
   switch (actor.action) {

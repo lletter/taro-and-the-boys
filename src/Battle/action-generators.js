@@ -33,6 +33,29 @@ export function attack(options) {
           // target.HP -= damage * this.damageMod;
           target.HP -= damage;
         }
+        console.log(`${target.name} has ${target.HP} health`);
+        await delay(1000); // Will be replaced by some animation
+      };
+    },
+  };
+}
+
+export function enemyAttack(options) {
+  let damage = options.damage || 1;
+  // Return a move object
+  return {
+    name: 'Enemy Attack',
+    type: TARGETED,
+    create(target) {
+      return async () => {
+        if (target.status == status.DEFEND) {
+          target.HP -= damage * target.defenseMod;
+        } else {
+          // target.HP -= damage * this.damageMod;
+          target.HP -= damage;
+        }
+        console.log(`${target.name} has ${target.HP} health`);
+        console.log(" THIS IS AN ENEMY ATTACK ");
         await delay(1000); // Will be replaced by some animation
       };
     },
@@ -62,6 +85,8 @@ export function flingPoo(options) {
     create(target) {
       return async () => {
         target.status = status.STUNNED;
+        target.HP -= damage;
+        console.log(`${target.name} has ${target.HP} health`);
         await delay(1000); // Will be replaced by some animation
       };
     },

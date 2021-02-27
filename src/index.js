@@ -92,14 +92,8 @@ actors.push(
 
 actors.push(
   new Actor({
-    name: 'Taro',
-    moves: [generators.attack({ damage: 10 })],
-  })
-);
-actors.push(
-  new Actor({
     name: 'Booba',
-    moves: [generators.attack({ damage: 10 })],
+    moves: [generators.enemyAttack({ damage: 10 })],
     enemy: true,
   })
 );
