@@ -2,14 +2,14 @@
 // In the future, create a more modular moveslist
 
 // Global Moves List
-const moves = {
+export const moves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
   SPELLS: 'spells',
 };
 
 // Global Status List
-const status = {
+export const status = {
   ALIVE: 'alive',
   DEAD: 'dead',
   DEFEND: 'defend',
@@ -17,13 +17,13 @@ const status = {
 };
 
 // Character Specific Moves List
-const heroMoves = {
+export const heroMoves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
   SPELLS: 'spells',
   // At the moment SPELLS simply stuns the target
 };
-const enemyMoves = {
+export const enemyMoves = {
   ATTACK: 'attack',
   DEFEND: 'defend',
 };
@@ -33,7 +33,7 @@ export class Actor {
    * @param {Object} opts
    * @param {Number} opts.HP HP
    * @param {Number} opts.MP MP
-   * @param {Object} opts.Moves Movelist
+   * @param {Object} opts.moves Movelist
    * @param {Number} opts.damageMod
    * @param {Number} opts.defenseMod
    * @param {Boolean} opts.enemy
@@ -41,14 +41,20 @@ export class Actor {
   constructor(opts) {
     this.name = opts.name || 'Actor';
     this.HP = opts.HP || 100;
+    this.maxHP = this.HP;
     this.MP = opts.MP || 30;
     this.moves = opts.moves || [];
     this.damageMod = opts.damageMod || 1;
     this.defenseMod = opts.defenseMod || 1;
     this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
+    this.view = opts.view;
     this.target = null;
     this.action = null;
+  }
+
+  updateView() {
+    this.view.setHealth(this.HP / this.maxHP);
   }
 
   setActionTarget(action, target) {
@@ -59,65 +65,92 @@ export class Actor {
     // Check if valid action
     if (moves.action != null) {
       this.action = action;
-      return 0;
     }
 
-    for (let i = 0; i < actors.length; i++) {
-      if (actors[i].name == target) {
-        this.target = i;
-        return 0;
-      }
+    if (target < actors.length) {
+      this.target = target;
     }
 
-    // Error
-    return -1;
+    console.log('Action: ' + this.action + ' -> ' + this.target);
   }
 }
 
 let actors = [];
 let turnCount = 0;
+let players = 0;
+let enemies = 0;
 
-function gameManager() {
-  let activeActor = turnCount % actors.length;
+// function gameManager() {
 
-  // Wait for action
-  let validAction = false;
+//   for (let i = 0; i < actors.length; i++) {
+//     console.log(i + " : " + actors[i].name + " : " + actors[i].status + ". HP: " + actors[i].HP);
+//   }
+//   console.log("Players alive: " + players);
+//   console.log("Enemies alive: " + enemies);
 
-  while (!validAction && actors.status != status.STUNNED) {
-    // Get action from UI
-    //
-    // TODO: getUIaction();
-    actors[activeActor].setActionTarget(getUIaction());
+//   let activeActor = turnCount % actors.length;
 
-    if (
-      actors[activeActor].action != null &&
-      actors[activeActor].target != null
-    ) {
-      validAction = true;
-    }
-  }
+//   // Wait for action
+//   let validAction = false;
 
-  // Execute Action
-  actionManager(actors[activeActor]);
+//   while (!validAction && actors.status != status.STUNNED) {
+//     // Get action from UI
 
-  // Reflect Status of Actors back to UI
-  updateUI();
+//     actors[activeActor].setActionTarget(getUIaction());
 
-  // Next turn
-  turnCount++;
+//     if (
+//       actors[activeActor].action != null &&
+//       actors[activeActor].target != null
+//     ) {
+//       validAction = true;
+//     }
+//   }
 
-  // Loop
-  gameManager();
-}
+//   // Execute Action
+//   actionManager(actors[activeActor]);
+
+//   // Reflect Status of Actors back to UI
+//   updateUI();
+
+//   // Check victory / defeat
+//   if (players == 0) {
+//     endScreen(false);
+//     return;
+//   }
+
+//   if (enemies == 0) {
+//     endScreen(true);
+//     return;
+//   }
+
+//   // Next turn
+//   turnCount++;
+
+//   // Loop
+//   gameManager();
+// }
 
 function actionManager(actor) {
   switch (actor.action) {
     case moves.ATTACK:
       var DAMAGE = actors[actor.target].status == status.DEFEND ? 25 : 50;
       actors[actor.target].HP -= DAMAGE;
+
+      console.log(
+        actor.name +
+          ' attacks ' +
+          actors[actor.target].name +
+          ' for ' +
+          DAMAGE +
+          ' points!'
+      );
+
       break;
     case moves.DEFEND:
       actor.status = status.DEFEND;
+
+      console.log(actor + ' is defending!');
+
       break;
     case moves.SPELLS:
       actors[actor.target].STATUS = status.STUNNED;
@@ -127,35 +160,41 @@ function actionManager(actor) {
   }
 }
 
-function init() {
-  // Add in actors
-  actors.push(new Actor('Hero', 150, 150, heroMoves, 1.1, 0.9));
-  actors.push(new Actor('Enemy', 50, 50, enemyMoves));
-
-  gameManager();
+function endScreen(win) {
+  if (win) {
+    console.log('You win!');
+  } else {
+    console.log('Game over');
+  }
 }
 
 function updateUI() {
+  console.log('Update');
   // Check for HP changes
   for (let i = 0; i < actors.length; i++) {
-    if (actors[i].HP < 0) {
+    if (actors[i].HP <= 0) {
       actors[i].status = status.DEAD;
     }
   }
 
   // Draw actors status
-  for (let i = 0; i < actors.length; i++) {
-    switch (actors[i].status) {
-      case moves.ALIVE:
+  for (let i = 0; i < this.actors.length; i++) {
+    switch (this.actors[i].status) {
+      case status.ALIVE:
         // Play IDLE animation
+        console.log(this.actors[i].name + ' is alive!');
 
         break;
-      case moves.DEAD:
+      case status.DEAD:
         // Play DEAD animation
 
+        console.log(this.actors[i].name + ' has died!');
+
         break;
-      case moves.STUNNED:
+      case status.STUNNED:
         // Play STUNNED animation
+
+        console.log(this.actors[i].name + ' has been stunned!');
 
         break;
       default:
@@ -166,15 +205,17 @@ function updateUI() {
   // Remove DEAD actors
   for (let i = 0; i < actors.length; i++) {
     if (actors[i].status == status.DEAD) {
-      actors.remove(actors[i]);
+      if (actors[i].enemy) {
+        enemies--;
+      } else {
+        players--;
+      }
+
+      console.log('Removing ' + actors[i].name);
+      actors.splice(i, 1);
       i--;
     }
   }
-}
-
-function getUIaction() {
-  // TODO
-  return 0;
 }
 
 // init();
