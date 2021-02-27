@@ -29,24 +29,24 @@ const enemyMoves = {
 };
 
 export class Actor {
-  constructor(
-    name = '',
-    HP = 100,
-    MP = 100,
-    movesList,
-    damageMod = 1,
-    defenseMod = 1
-  ) {
-    this.name = name;
-    this.HP = HP;
-    this.MP = MP;
-    this.movesList = movesList;
-
-    this.damageMod = damageMod;
-    this.defenseMod = defenseMod;
-
+  /**
+   * @param {Object} opts
+   * @param {Number} opts.HP HP
+   * @param {Number} opts.MP MP
+   * @param {Object} opts.Moves Movelist
+   * @param {Number} opts.damageMod
+   * @param {Number} opts.defenseMod
+   * @param {Boolean} opts.enemy
+   */
+  constructor(opts) {
+    this.name = opts.name || 'Actor';
+    this.HP = opts.HP || 100;
+    this.MP = opts.MP || 30;
+    this.moves = opts.moves || [];
+    this.damageMod = opts.damageMod || 1;
+    this.defenseMod = opts.defenseMod || 1;
+    this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
-
     this.target = null;
     this.action = null;
   }
