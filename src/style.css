@@ -17,7 +17,7 @@ canvas {
 }
 
 .menu {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 8px;
   z-index: 1;
   display: flex;
@@ -25,8 +25,7 @@ canvas {
   justify-content: center;
   position: absolute;
   box-shadow: 1px 1px 4px 1px rgba(0, 0, 0, 0.1);
-  min-width: 256px;
-  min-height: 150px;
+  width: 100%;
 }
 
 #tasks {
@@ -51,7 +50,9 @@ canvas {
 
 .action-item {
   margin: 4px;
-  flex: 1 1 100%;
+  flex: 1 1 content;
+  min-width: 128px;
+  min-height: 128px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,4 +60,11 @@ canvas {
 
 .action-item:hover {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.mouse-handler {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  pointer-events: auto;
 }

@@ -97,8 +97,18 @@ actors.push(
     enemy: true,
   })
 );
+<<<<<<< HEAD
 
 
+=======
+actors.push(
+  new Actor({
+    name: 'Beebo',
+    moves: [generators.attack({ damage: 10 })],
+    enemy: true,
+  })
+);
+>>>>>>> b183ea6752ed5ba3006bec279943420af86e7b06
 const manager = new GameManager(actors, scene);
 manager.start();
 resize(config);
