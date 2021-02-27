@@ -39,14 +39,20 @@ function resize(dim) {
   camera.updateProjectionMatrix();
 }
 
-const attack = generators.attack({ damage: 10 });
-const moves = [attack, attack, attack, attack];
-
 const actors = [];
-actors.push(new Actor('Hero', 150, 150, moves, 1.1, 0.9));
-actors.push(new Actor('Monke', 150, 150, moves, 1.1, 0.9));
-actors.push(new Actor('Chicken', 150, 150, moves, 1.1, 0.9));
-actors.push(new Actor('Doggy', 150, 150, moves, 1.1, 0.9));
+actors.push(
+  new Actor({
+    name: 'Taro',
+    moves: [generators.attack({ damage: 10 })],
+  })
+);
+actors.push(
+  new Actor({
+    name: 'Booba',
+    moves: [generators.attack({ damage: 10 })],
+    enemy: true,
+  })
+);
 const manager = new GameManager(actors, scene);
 manager.start();
 resize(config);
