@@ -1,5 +1,4 @@
 import { Color, Scene, Vector3 } from 'three';
-import { createPopper } from '@popperjs/core';
 import Ground from '../data/Ground';
 import { Arrow } from '../data';
 
@@ -79,16 +78,6 @@ export class BattleScene extends Scene {
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
         else this.taskList.innerHTML += `${t.description}<br/>`;
       });
-  }
-
-  createMenu(root) {
-    const div = document.createElement('div');
-    div.classList.add('menu');
-    root.appendChild(div);
-    createPopper(root, div, {
-      placement: 'right',
-    });
-    return div;
   }
 
   /**
