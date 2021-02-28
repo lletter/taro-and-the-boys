@@ -57,6 +57,30 @@ class View extends Group {
     });
   }
 
+  onStun(duration) {
+    const start = {
+      x: this.position.x,
+      y: this.position.y,
+      z: this.position.z,
+    };
+    const v = { t: 0 };
+    return animation(v, {
+      duration,
+      t: 1,
+      onUpdate: () => {
+        this.position.x =
+          start.x +
+          (Math.cos(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+        this.position.z =
+          start.z +
+          (Math.sin(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+      },
+      onComplete: () => {
+        this.position.copy(start);
+      },
+    });
+  }
+
   /**
    * Trigger an attack animation.
    * @param {*} target the view of the enemy

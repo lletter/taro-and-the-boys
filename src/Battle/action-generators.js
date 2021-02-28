@@ -182,7 +182,8 @@ export class Fling extends Move {
       generator: this,
       target: this,
       execute: async () => {
-        target.status = status.STUNNED;
+        const stunned = Math.random() < 0.33;
+        if (stunned) target.status = status.STUNNED;
         target.HP -= this.damage;
 
         // Animation
@@ -206,6 +207,8 @@ export class Fling extends Move {
         this.owner.view.remove(projectile);
         SplatSound.play();
         await target.view.onHit(0.3);
+        if (stunned) await delay(1);
+        if (stunned) await target.view.onStun(1);
       },
     };
   }
@@ -228,25 +231,7 @@ export class Pass extends Move {
     return {
       generator: this,
       execute: async () => {
-        const start = {
-          x: this.owner.view.position.x,
-          y: this.owner.view.position.y,
-          z: this.owner.view.position.z,
-        };
-        const v = { t: 0 };
-        await createAnimation(v, {
-          duration: 1,
-          t: 1,
-          onUpdate: () => {
-            this.owner.view.position.x =
-              start.x +
-              (Math.cos(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
-            this.owner.view.position.z =
-              start.z +
-              (Math.sin(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
-          },
-        });
-        this.owner.view.position.copy(start);
+        await this.owner.view.onStun(1);
       },
     };
   }
@@ -335,47 +320,45 @@ export class Heal extends Move {
     this.name = this.name || 'Feed Egg';
   }
 
-  generateAction(ally) {
+  async healOne(ally) {
+    ally.HP += this.restore;
+
+    // ANIMATION
+    const start = new Vector3().copy(this.owner.view.position);
+    const allyPos = new Vector3().copy(ally.view.position);
+    await createAnimation(this.owner.view.position, {
+      duration: 0.2,
+      x: allyPos.x,
+      y: allyPos.y,
+      z: allyPos.z,
+    });
+    SmoochSound.currentTime = 0;
+    SmoochSound.play();
+    ally.updateView();
+    await ally.view.onHit(0.8);
+    await createAnimation(this.owner.view.position, {
+      duration: 0.8,
+      ...start,
+    });
+  }
+  generateAction(allies) {
     return {
       generator: this,
       execute: async () => {
-        ally.HP += this.restore;
-
-        // ANIMATION
-        const start = new Vector3().copy(this.owner.view.position);
-        const allyPos = new Vector3().copy(ally.view.position);
-        await createAnimation(this.owner.view.position, {
-          duration: 0.2,
-          x: allyPos.x,
-          y: allyPos.y,
-          z: allyPos.z,
-        });
-        SmoochSound.currentTime = 0;
-        SmoochSound.play();
-        ally.updateView();
-        await ally.view.onHit(0.8);
-        await createAnimation(this.owner.view.position, {
-          duration: 0.8,
-          ...start,
-        });
+        for (let ally of allies) {
+          await this.healOne(ally);
+        }
       },
     };
   }
 
   onChosen(scene, gm) {
-    const allies = gm.actors.filter(
-      (a) => a.enemy === this.owner.enemy && a !== this.owner
-    );
-    const callback = (chosen) => gm.run(this.generateAction(chosen));
-    scene.subMenu(allies, callback, scene.menus[scene.menus.length - 1]);
+    this.doRandom(gm);
   }
 
   doRandom(gm) {
-    const allies = gm.actors.filter(
-      (a) => a.enemy === this.owner.enemy && a !== this.owner
-    );
-    const randomAlly = allies[Math.floor(Math.random() * allies.length)];
-    gm.run(this.generateAction(randomAlly));
+    const allies = gm.actors.filter((a) => a.enemy === this.owner.enemy);
+    gm.run(this.generateAction(allies));
   }
 }
 

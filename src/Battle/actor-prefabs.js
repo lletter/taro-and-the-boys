@@ -5,14 +5,14 @@ import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
 export const Taro = () =>
   new Actor({
     name: 'Taro',
-    HP: 100,
+    HP: 80,
     MP: 150,
     defenseMod: 0.8,
     view: models.Taro(),
   })
-    .addMove(Attack, { name: 'Slash', damage: 50 })
+    .addMove(Attack, { name: 'Slash', damage: 5 })
     .addMove(Guard)
-    .addMove(Throw);
+    .addMove(Throw, { damage: 40 });
 
 export const Monke = () =>
   new Actor({
@@ -23,7 +23,7 @@ export const Monke = () =>
     view: models.Monke(),
     enemy: false,
   })
-    .addMove(Attack, { damage: 10 })
+    .addMove(Attack, { name: 'Swipe', damage: 15 })
     .addMove(Fling, { damage: 5 })
     .addMove(Guard);
 
@@ -37,8 +37,8 @@ export const Chicken = () =>
     view: models.Chicken(),
   })
     .addMove(Attack, { damage: 10 })
-    .addMove(Guard, { damage: 10 })
-    .addMove(Heal, { restore: 30 });
+    .addMove(Guard)
+    .addMove(Heal, { name: 'Feed Eggs', restore: 25 });
 
 export const Doggy = () =>
   new Actor({
@@ -49,23 +49,26 @@ export const Doggy = () =>
     enemy: false,
     view: models.Doggy(),
   })
-    .addMove(Attack, { damage: 10 })
-    .addMove(Guard, { damage: 10 });
+    .addMove(Attack, { name: 'Bite', damage: 80 })
+    .addMove(Guard);
 
 export const Booba = () =>
   new Actor({
     name: 'Booba',
     enemy: true,
     view: models.Bear(),
+    HP: 250,
   })
-    .addMove(Attack, { damage: 60 })
-    .addMove(Guard);
+    .addMove(Attack, { damage: 70 })
+    .addMove(Guard)
+    .addMove(Heal, { restore: 20 });
 
 export const Beebo = () =>
   new Actor({
     name: 'Beebo',
     enemy: true,
     view: models.Panda(),
+    HP: 200,
   })
     .addMove(Multi, { damage: 20 })
     .addMove(Attack, { damage: 30 })
