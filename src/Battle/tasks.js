@@ -98,6 +98,21 @@ export class MustDieTask extends Task {
 }
 
 /**
+ * The enemyActor must die
+ */
+export class EnemyMustDieTask extends Task {
+  get description() {
+    return `${this.actor.name}: Must Die`;
+  }
+
+  get fulfilled() {
+    return this.actor.HP <= 0;
+  }
+
+  update() {}
+}
+
+/**
  * The actor must be alive
  */
 export class StayAliveTask extends Task {

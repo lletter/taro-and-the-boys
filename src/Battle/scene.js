@@ -2,6 +2,7 @@ import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
 import Ground from '../data/Ground';
 import { Arrow } from '../data';
+
 import BattleMP3 from '../data/battle1.mp3';
 
 const BattleMusic = new Audio(BattleMP3);
@@ -84,7 +85,9 @@ export class BattleScene extends Scene {
     const div = document.createElement('div');
     div.classList.add('menu');
     root.appendChild(div);
-    createPopper(root, div, { placement: 'right' });
+    createPopper(root, div, {
+      placement: 'right',
+    });
     return div;
   }
 
@@ -167,6 +170,12 @@ export class BattleScene extends Scene {
     let enemies = 0;
     for (let i = 0; i < gm.actors.length; i++) {
       const actor = gm.actors[i];
+
+      // if (i < 4 && !aliveList[i]) {
+      //   actor.HP = 0;
+      // } else {
+      // console.log(actor.name + " has " + actor.HP + " HP")
+
       if (actor.enemy) {
         actor.view.position.copy(config.enemyPositions[enemies]);
         this.add(actor.view);
@@ -176,6 +185,7 @@ export class BattleScene extends Scene {
         this.add(actor.view);
         allies += 1;
       }
+      // }
     }
     this.initialActors = [...gm.actors];
 

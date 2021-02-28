@@ -1,10 +1,19 @@
 import { PerspectiveCamera, WebGLRenderer } from 'three';
 import { BattleScene } from './Battle/scene';
 import { GameManager } from './Battle/game-manager';
+
+import { whoIsDead, gameOver } from './Battle/game-manager';
+
 import * as actors from './Battle/actor-prefabs';
+import * as level_1 from './Battle/level_1';
+import * as level_2 from './Battle/level_2';
+import * as level_3 from './Battle/level_3';
+import * as level_boss from './Battle/level_boss';
 import './style.css';
 import config from './config';
 import MainMenu from './MainMenu';
+
+export let aliveList = [true, true, true, true];
 
 let scene = new BattleScene();
 const camera = new PerspectiveCamera(
@@ -22,18 +31,63 @@ const root = document.getElementById('root');
 root.style.display = 'none';
 root.appendChild(renderer.domElement);
 
+let level = 0;
 MainMenu.onclick = () => {
-  const a = [
-    actors.Taro(),
-    actors.Monke(),
-    actors.Chicken(),
-    actors.Doggy(),
-    actors.Booba(),
-    actors.Beebo(),
-  ];
+  let a;
+
+  // updates alive list after each round
+  let allyID;
+  for (let i = 0; i < whoIsDead.length; i++) {
+    console.log('whoisDead: ' + whoIsDead[i] + ' is dead');
+
+    if (whoIsDead[i] == 'Monke') allyID = 1;
+    else if (whoIsDead[i] == 'Chicken') allyID = 2;
+    else if (whoIsDead[i] == 'Doggy') allyID = 3;
+
+    if (allyID != 0) {
+      // Set correct actor status to dead
+      console.log('update aliveList');
+      aliveList[allyID] = false;
+    }
+  }
+
+  for (let j = 0; j < aliveList.length; j++) {
+    if (!aliveList[j]) {
+      console.log(j + ' is dead');
+    }
+  }
+
+  if (gameOver) {
+    level = 0;
+    aliveList = [true, true, true, true];
+    console.log('restarting...');
+  } else {
+    console.log('Loading level ' + (level + 1));
+  }
+
+  switch (level) {
+    case 0:
+      a = Object.values(level_1).map((a) => a());
+      break;
+    case 1:
+      a = Object.values(level_2).map((a) => a());
+      break;
+    case 2:
+      a = Object.values(level_3).map((a) => a());
+      break;
+    case 3:
+      a = Object.values(level_boss).map((a) => a());
+      break;
+    default:
+      a = Object.values(level_1).map((a) => a());
+      break;
+  }
+
   scene = new BattleScene();
-  const manager = new GameManager(a, scene);
+  const manager = new GameManager(a, scene, level);
   manager.start();
+
+  level++;
   root.style.display = 'block';
 };
 
@@ -54,6 +108,26 @@ function resize(dim) {
   renderer.setSize(width, height);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
+}
+
+function importAlive(levelList) {
+  let loadList = [];
+  loadList.push(Object.values(level_1)[1]);
+
+  for (let i = 1; i < Object.values(levelList).length; i++) {
+    // loadList.push(Object.values(level_1)[i]);
+    if (i < 4 && aliveList[i]) {
+      loadList.push(Object.values(level_1)[i]);
+    } else if (i < 4 && !aliveList[i]) {
+      console.log(Object.values(level_1)[i].name + ' is dead');
+      loadList.push(Object.values(level_1)[i]);
+      loadList[i].HP == 0;
+    } else {
+      loadList.push(Object.values(level_1)[i]);
+    }
+  }
+
+  return loadList;
 }
 
 resize(config);
