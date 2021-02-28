@@ -1,6 +1,6 @@
 import * as models from '../data';
 import { Actor } from './actor';
-import { Attack, Guard, Fling, Throw, Heal } from './action-generators';
+import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
 
 export const Taro = () =>
   new Actor({
@@ -67,5 +67,6 @@ export const Beebo = () =>
     enemy: true,
     view: models.Panda(),
   })
-    .addMove(Attack, { damage: 60 })
+    .addMove(Multi, { damage: 20 })
+    .addMove(Attack, { damage: 30 })
     .addMove(Guard);

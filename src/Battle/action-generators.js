@@ -378,3 +378,33 @@ export class Heal extends Move {
     gm.run(this.generateAction(randomAlly));
   }
 }
+
+export class Multi extends Move {
+  constructor(owner, config = {}) {
+    super(owner, config);
+    this.damage = config.damage;
+    this.name = this.name || 'Attack';
+    this.attack = new Attack(owner, config);
+  }
+
+  generateAction(targets) {
+    return {
+      generator: this,
+      execute: async () => {
+        for (let target of targets) {
+          await this.attack.generateAction(target).execute();
+        }
+      },
+    };
+  }
+
+  doRandom(gm) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    gm.run(this.generateAction(enemies));
+  }
+
+  onChosen(scene, gm) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    gm.run(this.generateAction(enemies));
+  }
+}
