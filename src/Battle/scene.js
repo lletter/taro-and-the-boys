@@ -167,6 +167,7 @@ export class BattleScene extends Scene {
   }
 
   start(gm) {
+    BattleMusic.currentTime = 0;
     BattleMusic.play();
     this.add(Ground);
 
@@ -190,5 +191,9 @@ export class BattleScene extends Scene {
       gm.activeActor.view.getWorldPosition(this.arrow.position);
       this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
     });
+  }
+
+  close() {
+    BattleMusic.pause();
   }
 }
