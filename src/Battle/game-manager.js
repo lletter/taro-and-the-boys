@@ -3,8 +3,12 @@ import {
   GuardInRowTask,
   StayAliveTask,
   EndWhenEnemiesDie,
+  EnemyMustDieTask,
 } from './tasks';
 import MainMenu from '../MainMenu';
+import {
+  aliveList
+} from '..';
 
 const status = {
   ALIVE: 'alive',
@@ -19,12 +23,16 @@ const GameState = {
   WON: 2,
 };
 
+export let whoIsDead = [];
+
+
 export class GameManager {
   get activeActor() {
     return this.actors[this.turnCount % this.actors.length];
   }
 
-  constructor(actors, scene) {
+  constructor(actors, scene, level) {
+    this.level = level;
     this.scene = scene;
     this.actors = actors;
     this.turnCount = 0;
@@ -32,15 +40,33 @@ export class GameManager {
 
     // TODO: Add in customization parameters
     this.tasks = [
-      new GuardInRowTask(actors[0]),
-      new MustDieTask(actors[1]),
-      new MustDieTask(actors[2]),
-      new MustDieTask(actors[3]),
-      new MustDieTask(actors[4], { visible: false }),
-      new MustDieTask(actors[5], { visible: false }),
+      //new GuardInRowTask(actors[0]),
       new StayAliveTask(actors[0]),
       new EndWhenEnemiesDie(actors.filter((a) => a.enemy)),
     ];
+
+    let removeList = [];
+    // Scan for dead actors and add tasks accordingly
+    for (let i = 0; i < actors.length; i++) {
+      if (!aliveList[i] && i < 3) {
+        // Mark dead allies for removal from actor array
+        removeList.push(i);
+      } else if (i != 0) {
+        // Add MustDieTask to all other actors
+        if (actors[i].enemy) {
+          this.tasks.push(new EnemyMustDieTask(actors[i]));
+        } else {
+          this.tasks.push(new MustDieTask(actors[i]));
+        }
+      }
+    }
+
+    // Remove dead actors
+    for (let i = 0; i < removeList.length; i++) {
+      actors.splice(removeList[i], 1);
+    }
+
+
   }
 
   start() {
@@ -85,6 +111,7 @@ export class GameManager {
 
       this.scene.update(this);
 
+
       // Either generate our next action or open a menu to run it.
       if (this.activeActor.enemy) {
         this.run(this.activeActor.getAIAction(this));
@@ -92,6 +119,8 @@ export class GameManager {
       } else {
         this.scene.openMenu(this, this.activeActor, this.run);
       }
+
+
     });
   }
 
@@ -100,10 +129,11 @@ export class GameManager {
     for (let i = 0; i < this.actors.length; i++) {
       if (this.actors[i].HP <= 0) {
         this.actors[i].status = status.DEAD;
+        whoIsDead.push(this.actors[i].name);
       }
     }
 
-    // Remove DEAD actors
+    // // Remove DEAD actors
     for (let i = 0; i < this.actors.length; i++) {
       if (this.actors[i].status == status.DEAD) {
         if (this.actors[i].enemy) {
@@ -122,11 +152,34 @@ export class GameManager {
     const shouldContinue = this.tasks.every((t) => t.valid);
     const won = this.tasks.every((t) => t.fulfilled);
 
+
+    // Checks if all tasks are done and AT least one ally is dead
+    let win = true;
+    let oneDied = false;
+    for (let i = 0; i < this.tasks.length; i++) {
+      if (this.tasks[i] instanceof MustDieTask && this.tasks[i].fulfilled) {
+        oneDied = true;
+        console.log("one has died")
+      } else if (!(this.tasks[i] instanceof MustDieTask)) {
+        win = win && this.tasks[i].fulfilled;
+        console.log("win " + win);
+        console.log(this.tasks[i].description + " : " + this.tasks[i].fulfilled);
+      }
+    }
+    win = win && oneDied;
+
+    console.log("shouldContinue :" + shouldContinue);
+    console.log("win :" + win);
+
+
     console.log(this.tasks.filter((t) => !t.valid));
     console.log(this.tasks.filter((t) => !t.fulfilled));
 
     if (shouldContinue) return GameState.CONTINUE;
-    if (won) return GameState.WON;
-    else return GameState.LOST;
+    if (win) {
+      this.level++;
+      console.log("Next Level");
+      return GameState.WON;
+    } else return GameState.LOST;
   }
 }
