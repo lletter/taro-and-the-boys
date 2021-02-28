@@ -58,7 +58,10 @@ export class Actor {
     if (this.status === status.STUNNED) {
       gm.run(this.pass.generateAction());
       this.status = status.ALIVE;
-    } else if (!this.enemy) {
+      return;
+    }
+    if (this.status === this.status.DEFEND) this.status = status.ALIVE;
+    if (!this.enemy) {
       scene.openMenu(gm, this);
     } else {
       const move = this.moves[Math.floor(Math.random() * this.moves.length)];

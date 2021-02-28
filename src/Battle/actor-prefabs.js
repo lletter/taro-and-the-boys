@@ -7,7 +7,7 @@ export const Taro = () =>
     name: 'Taro',
     HP: 80,
     MP: 150,
-    defenseMod: 0.8,
+    defenseMod: 0.3,
     view: models.Taro(),
   })
     .addMove(Attack, { name: 'Slash', damage: 5 })
@@ -19,7 +19,7 @@ export const Monke = () =>
     name: 'Monke',
     HP: 100,
     MP: 50,
-    defenseMod: 1,
+    defenseMod: 0.5,
     view: models.Monke(),
     enemy: false,
   })
@@ -32,7 +32,7 @@ export const Chicken = () =>
     name: 'Chicken',
     HP: 70,
     MP: 200,
-    defenseMod: 0.7,
+    defenseMod: 0.5,
     enemy: false,
     view: models.Chicken(),
   })
@@ -45,7 +45,7 @@ export const Doggy = () =>
     name: 'Doggy',
     HP: 100,
     MP: 200,
-    defenseMod: 0.5,
+    defenseMod: 0.3,
     enemy: false,
     view: models.Doggy(),
   })
