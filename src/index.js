@@ -4,8 +4,9 @@ import { GameManager } from './Battle/game-manager';
 import * as actors from './Battle/actor-prefabs';
 import './style.css';
 import config from './config';
+import MainMenu from './MainMenu';
 
-const scene = new BattleScene();
+let scene = new BattleScene();
 const camera = new PerspectiveCamera(
   20,
   window.innerWidth / window.innerHeight,
@@ -17,7 +18,17 @@ camera.position.y = 6;
 camera.lookAt(0, 0, 0);
 
 const renderer = new WebGLRenderer();
-document.getElementById('root').appendChild(renderer.domElement);
+const root = document.getElementById('root');
+root.style.display = 'none';
+root.appendChild(renderer.domElement);
+
+MainMenu.onclick = () => {
+  const a = Object.values(actors);
+  scene = new BattleScene();
+  const manager = new GameManager(a, scene);
+  manager.start();
+  root.style.display = 'block';
+};
 
 function animate() {
   requestAnimationFrame(animate);
@@ -38,8 +49,5 @@ function resize(dim) {
   camera.updateProjectionMatrix();
 }
 
-const a = Object.values(actors);
-const manager = new GameManager(a, scene);
-manager.start();
 resize(config);
 animate();

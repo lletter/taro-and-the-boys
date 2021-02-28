@@ -9,12 +9,17 @@ canvas {
   font-family: sans-serif;
 }
 
-#root {
+.container {
   position: relative;
   margin: auto;
   width: 1024px;
   height: 768px;
   box-shadow: 1px 1px 16px 1px gray;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
 }
 
 .menu {
@@ -63,9 +68,15 @@ canvas {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.mouse-handler {
+.panel {
   position: absolute;
   height: 100%;
   width: 100%;
-  pointer-events: auto;
+}
+
+#main-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

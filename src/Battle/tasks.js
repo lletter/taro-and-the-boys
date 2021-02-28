@@ -112,7 +112,7 @@ export class StayAliveTask extends Task {
   }
 
   get valid() {
-    return this.actor.HP <= 0;
+    return this.actor.HP > 0;
   }
 }
 

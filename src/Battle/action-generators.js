@@ -6,6 +6,10 @@ import SPLAT from '../data/SFX/splat.wav';
 import SWING from '../data/SFX/sword.wav';
 import GUARD from '../data/SFX/guard.wav';
 
+const SplatSound = new Audio(SPLAT);
+const SwingSound = new Audio(SWING);
+const GuardSound = new Audio(GUARD);
+
 // Global Status List
 const status = {
   ALIVE: 'alive',
@@ -91,7 +95,7 @@ export class Attack extends Move {
           ease: 'power1.in',
         });
         target.updateView();
-        new Audio(SWING).play();
+        SwingSound.play();
         await target.view.onHit(time / 3);
         await createAnimation(this.owner.view.position, {
           duration: time / 3,
@@ -119,7 +123,7 @@ export class Guard extends Move {
 
         // animation
         const y = this.owner.view.position.y;
-        new Audio(GUARD).play();
+        GuardSound.play();
         await createAnimation(this.owner.view.sprite.position, {
           y: '+0.2',
           duration: 0.2,
@@ -171,7 +175,7 @@ export class Fling extends Move {
           ease: 'none',
         });
         this.owner.view.remove(projectile);
-        new Audio(SPLAT).play();
+        SplatSound.play();
         await target.view.onHit(0.3);
       },
     };

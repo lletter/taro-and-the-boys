@@ -9,7 +9,7 @@ export const Taro = new Actor({
   defenseMod: 0.8,
   view: models.Taro(),
 });
-Taro.addMove(Attack, { name: 'Slash', damage: 5 });
+Taro.addMove(Attack, { name: 'Slash', damage: 50 });
 Taro.addMove(Guard);
 
 export const Monke = new Actor({
@@ -60,4 +60,4 @@ export const Beebo = new Actor({
   view: models.Panda(),
 });
 Beebo.addMove(Attack, { damage: 60 });
-Beebo.addMove(Guard);
+// Beebo.addMove(Guard);

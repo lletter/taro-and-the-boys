@@ -2,7 +2,11 @@ import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
 import { TARGETED } from './action-types';
 import Ground from '../data/Ground';
-import { Arrow, Shadow } from '../data';
+import { Arrow } from '../data';
+import BattleMP3 from '../data/battle1.mp3';
+
+const BattleMusic = new Audio(BattleMP3);
+BattleMusic.volume = 0.05;
 
 const config = {
   allyPositions: [
@@ -69,7 +73,7 @@ export class BattleScene extends Scene {
     }
 
     gm.tasks
-      // .filter((t) => t.visible)
+      .filter((t) => t.visible)
       .forEach((t) => {
         if (t.fulfilled)
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
@@ -163,6 +167,7 @@ export class BattleScene extends Scene {
   }
 
   start(gm) {
+    BattleMusic.play();
     this.add(Ground);
 
     let allies = 0;

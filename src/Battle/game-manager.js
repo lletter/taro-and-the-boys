@@ -4,6 +4,7 @@ import {
   StayAliveTask,
   EndWhenEnemiesDie,
 } from './tasks';
+import MainMenu from '../MainMenu';
 
 const status = {
   ALIVE: 'alive',
@@ -11,6 +12,7 @@ const status = {
   DEFEND: 'defend',
   STUNNED: 'stunned',
 };
+
 const GameState = {
   CONTINUE: 0,
   LOST: 1,
@@ -65,15 +67,24 @@ export class GameManager {
       this.turnCount += 1;
       this.actors.forEach((a) => a.updateView());
       this.tasks.forEach((t) => t.update(action));
-      this.scene.update(this);
 
       // Update our state and check if the match is over
       const current = this.statusCheck();
       if (current !== GameState.CONTINUE) {
+        MainMenu.show();
         if (current === GameState.WON) {
-          console.log('WON');
+          MainMenu.setHeader('YOU WON');
+          MainMenu.setButtonText('Next Round');
         } else {
-          console.log('LOST');
+          MainMenu.setHeader('YOU LOST');
+          const failedTasks = this.tasks.filter((t) => !t.fulfilled);
+          const str = failedTasks.reduce(
+            (acc, val) => acc + val.description + '\n',
+            ''
+          );
+          MainMenu.setDescription(`Next time, try to: \n
+            ${str}
+          `);
         }
         return;
       }
@@ -84,14 +95,15 @@ export class GameManager {
         this.turnCount++;
       }
 
+      this.scene.update(this);
+
       // Either generate our next action or open a menu to run it.
-      this.run(this.activeActor.getAIAction(this));
-      // if (this.activeActor.enemy) {
-      //   this.run(this.activeActor.getAIAction(this));
-      //   return;
-      // } else {
-      //   this.scene.openMenu(this, this.activeActor, this.run);
-      // }
+      if (this.activeActor.enemy) {
+        this.run(this.activeActor.getAIAction(this));
+        return;
+      } else {
+        this.scene.openMenu(this, this.activeActor, this.run);
+      }
     });
   }
 
@@ -119,8 +131,11 @@ export class GameManager {
     }
 
     // We should continue if a task becomes invalid
-    const shouldContinue = this.tasks.some((t) => !t.valid || !t.fulfilled);
+    const shouldContinue = this.tasks.every((t) => t.valid);
     const won = this.tasks.every((t) => t.fulfilled);
+
+    console.log(this.tasks.filter((t) => !t.valid));
+    console.log(this.tasks.filter((t) => !t.fulfilled));
 
     if (shouldContinue) return GameState.CONTINUE;
     if (won) return GameState.WON;

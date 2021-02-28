@@ -2,7 +2,7 @@ import { Box3, Group, Vector3 } from 'three';
 import { loadSprite, createHealthBar } from './util';
 import gsap from 'gsap';
 import TaroImg from './Taro/taro.png';
-import ChickenImg from './Chicken/chicken.png';
+import ChickenImg from './Chicken/chickfila.png';
 import DoggyImg from './Doggy/shibe.png';
 import MonkeImg from './Monke/monke.png';
 import BearImg from './Bear/bear.png';
