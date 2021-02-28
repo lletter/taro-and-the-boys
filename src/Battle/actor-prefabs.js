@@ -10,27 +10,33 @@ export const Taro = () =>
     defenseMod: 0.3,
     view: models.Taro(),
   })
+<<<<<<< Updated upstream
     .addMove(Attack, { name: 'Slash', damage: 9999 })
     .addMove(Guard)
     .addMove(Throw, { damage: 800 });
+=======
+    .addMove(Attack, { name: 'Slash', damage: 20 })
+    .addMove(Guard)
+    .addMove(Throw, { damage: 70 });
+>>>>>>> Stashed changes
 
 export const Monke = () =>
   new Actor({
     name: 'Monke',
-    HP: 100,
+    HP: 110,
     MP: 50,
     defenseMod: 0.5,
     view: models.Monke(),
     enemy: false,
   })
-    .addMove(Attack, { name: 'Swipe', damage: 15 })
-    .addMove(Fling, { damage: 5 })
+    .addMove(Attack, { name: 'Swipe', damage: 45 })
+    .addMove(Fling, { damage: 25 })
     .addMove(Guard);
 
 export const Chicken = () =>
   new Actor({
     name: 'Chicken',
-    HP: 70,
+    HP: 120,
     MP: 200,
     defenseMod: 0.5,
     enemy: false,
@@ -38,18 +44,18 @@ export const Chicken = () =>
   })
     .addMove(Attack, { damage: 10 })
     .addMove(Guard)
-    .addMove(Heal, { name: 'Feed Eggs', restore: 25 });
+    .addMove(Heal, { name: 'Feed Eggs', restore: 30 });
 
 export const Doggy = () =>
   new Actor({
     name: 'Doggy',
-    HP: 100,
+    HP: 80,
     MP: 200,
     defenseMod: 0.3,
     enemy: false,
     view: models.Doggy(),
   })
-    .addMove(Attack, { name: 'Bite', damage: 80 })
+    .addMove(Attack, { name: 'Bite', damage: 110 })
     .addMove(Guard);
 
 export const Booba = () =>
@@ -62,7 +68,7 @@ export const Booba = () =>
   })
     .addMove(Attack, { damage: 70 })
     .addMove(Guard)
-    .addMove(Heal, { restore: 20 });
+    .addMove(Heal, { restore: 30 });
 
 export const Beebo = () =>
   new Actor({
@@ -73,7 +79,11 @@ export const Beebo = () =>
     HP: 200,
   })
     .addMove(Multi, { damage: 20 })
+<<<<<<< Updated upstream
     .addMove(Attack, { damage: 30 })
+=======
+    .addMove(Attack, { damage: 35 })
+>>>>>>> Stashed changes
     .addMove(Guard);
 
 export const Dada = () =>
