@@ -23,7 +23,14 @@ root.style.display = 'none';
 root.appendChild(renderer.domElement);
 
 MainMenu.onclick = () => {
-  const a = Object.values(actors).map((a) => a());
+  const a = [
+    actors.Taro(),
+    actors.Monke(),
+    actors.Chicken(),
+    actors.Doggy(),
+    actors.Beebo(),
+    actors.Booba(),
+  ];
   scene = new BattleScene();
   const manager = new GameManager(a, scene);
   manager.start();
