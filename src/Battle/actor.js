@@ -39,6 +39,7 @@ export class Actor {
    */
   addMove(type, options) {
     this.moves.push(new type(this, options));
+    return this;
   }
 
   /**
