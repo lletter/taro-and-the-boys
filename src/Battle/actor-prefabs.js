@@ -10,15 +10,9 @@ export const Taro = () =>
     defenseMod: 0.3,
     view: models.Taro(),
   })
-<<<<<<< Updated upstream
-    .addMove(Attack, { name: 'Slash', damage: 9999 })
-    .addMove(Guard)
-    .addMove(Throw, { damage: 800 });
-=======
     .addMove(Attack, { name: 'Slash', damage: 20 })
     .addMove(Guard)
     .addMove(Throw, { damage: 70 });
->>>>>>> Stashed changes
 
 export const Monke = () =>
   new Actor({
@@ -79,11 +73,7 @@ export const Beebo = () =>
     HP: 200,
   })
     .addMove(Multi, { damage: 20 })
-<<<<<<< Updated upstream
-    .addMove(Attack, { damage: 30 })
-=======
     .addMove(Attack, { damage: 35 })
->>>>>>> Stashed changes
     .addMove(Guard);
 
 export const Dada = () =>
