@@ -28,8 +28,8 @@ MainMenu.onclick = () => {
     actors.Monke(),
     actors.Chicken(),
     actors.Doggy(),
-    actors.Beebo(),
     actors.Booba(),
+    actors.Beebo(),
   ];
   scene = new BattleScene();
   const manager = new GameManager(a, scene);
