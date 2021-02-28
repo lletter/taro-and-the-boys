@@ -57,6 +57,7 @@ export class Actor {
     console.log(this.status);
     if (this.status === status.STUNNED) {
       gm.run(this.pass.generateAction());
+      this.status = status.ALIVE;
     } else if (!this.enemy) {
       scene.openMenu(gm, this);
     } else {
