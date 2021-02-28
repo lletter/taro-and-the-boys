@@ -115,6 +115,12 @@ export class Attack extends Move {
       },
     };
   }
+
+  onChosen(scene, gm, done) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    const callback = (enemy) => done(this.generateAction(enemy));
+    scene.subMenu(enemies, callback, scene.menus[scene.menus.length - 1]);
+  }
 }
 
 export class Guard extends Move {
@@ -145,6 +151,10 @@ export class Guard extends Move {
         });
       },
     };
+  }
+
+  onChosen(scene, gm, done) {
+    done(this.generateAction());
   }
 }
 
@@ -187,6 +197,12 @@ export class Fling extends Move {
         await target.view.onHit(0.3);
       },
     };
+  }
+
+  onChosen(scene, gm, done) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    const callback = (enemy) => done(this.generateAction(enemy));
+    scene.subMenu(enemies, callback, scene.menus[scene.menus.length - 1]);
   }
 }
 
@@ -243,6 +259,22 @@ export class Throw extends Move {
       },
     };
   }
+
+  onChosen(scene, gm, done) {
+    const allies = gm.actors.filter(
+      (a) => a.enemy === this.owner.enemy && a !== this.owner
+    );
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    let ally;
+    const onAllyChosen = (chosen) => {
+      ally = chosen;
+      scene.subMenu(enemies, onEnemyChosen);
+    };
+    const onEnemyChosen = (enemy) => {
+      done(this.generateAction(ally, enemy));
+    };
+    scene.subMenu(allies, onAllyChosen);
+  }
 }
 
 export class Heal extends Move {
@@ -278,5 +310,13 @@ export class Heal extends Move {
         });
       },
     };
+  }
+
+  onChosen(scene, gm, done) {
+    const allies = gm.actors.filter(
+      (a) => a.enemy === this.owner.enemy && a !== this.owner
+    );
+    const callback = (chosen) => done(this.generateAction(chosen));
+    scene.subMenu(allies, callback, scene.menus[scene.menus.length - 1]);
   }
 }

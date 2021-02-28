@@ -69,10 +69,9 @@ export class BattleScene extends Scene {
     // if the sprite is loaded
     if (gm.activeActor.view.size) {
       gm.activeActor.view.getWorldPosition(this.arrow.position);
-      this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
-      this.taskList.innerHTML = '';
+      this.arrow.position.y = 1.2;
     }
-
+    this.taskList.innerHTML = '';
     gm.tasks
       .filter((t) => t.visible)
       .forEach((t) => {
@@ -93,39 +92,15 @@ export class BattleScene extends Scene {
   /**
    * The main hook to open a menu and choose one of the actor's actions.
    */
-  openMenu(gm, actor, callback) {
+  openMenu(gm, actor, done) {
     this.menus[0].style.visibility = 'visible';
     this.menus[0].style.pointerEvents = 'auto';
 
     actor.moves.forEach((move) => {
       this.createMenuItem(this.menus[0], move.name, () => {
-        switch (move.type) {
-          case TARGETED: {
-            const enemies = gm.actors.filter((a) => a.enemy);
-            const cb = (target) => callback(move.generateAction(target));
-            this.subMenu(enemies, cb, this.menus[0]);
-            return;
-          }
-          case DOUBLE_TARGETED: {
-            const allies = gm.actors.filter((a) => !a.enemy && a !== actor);
-            const enemies = gm.actors.filter((a) => a.enemy);
-            const cb = (ally) => {
-              const cb2 = (enemy) => callback(move.generateAction(ally, enemy));
-              this.subMenu(enemies, cb2, this.menus[this.menus.length - 1]);
-            };
-            this.subMenu(allies, cb, this.menus[this.menus.length - 1]);
-            return;
-          }
-          case ALLY_TARGETED: {
-            const allies = gm.actors.filter((a) => !a.enemy && a !== actor);
-            const cb = (ally) => callback(move.generateAction(ally));
-            this.subMenu(allies, cb, this.menus[0]);
-            return;
-          }
-          default: {
-            callback(move.generateAction());
-            return;
-          }
+        if (move.onChosen) {
+          move.onChosen(this, gm, done);
+          return;
         }
       });
     });
@@ -137,7 +112,8 @@ export class BattleScene extends Scene {
    * of the choices in the choices param.
    * @param {array} choices a list of actors. other choices aren't supported I think.
    */
-  subMenu(choices, callback, root) {
+  subMenu(choices, callback) {
+    const root = this.menus[this.menus.length - 1];
     const menu = document.createElement('div');
     menu.classList.add('menu', 'submenu');
     menu.style.transform = 'translateY(-8px)';
@@ -202,15 +178,13 @@ export class BattleScene extends Scene {
         allies += 1;
       }
     }
+    this.initialActors = [...gm.actors];
 
     this.update(gm);
-    gm.activeActor.view.sprite.onload.push(() => {
-      gm.activeActor.view.getWorldPosition(this.arrow.position);
-      this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
-    });
   }
 
   close() {
+    this.initialActors.forEach((actor) => actor.view.sprite.animation.free());
     BattleMusic.pause();
   }
 }
