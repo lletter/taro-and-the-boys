@@ -2,6 +2,10 @@ import { TARGETED, SELF_TARGETED } from './action-types';
 import { Poo, animation as createAnimation } from '../data';
 import { Vector3 } from 'three';
 
+import SPLAT from '../data/SFX/splat.wav';
+import SWING from '../data/SFX/sword.wav';
+import GUARD from '../data/SFX/guard.wav';
+
 // Global Status List
 const status = {
   ALIVE: 'alive',
@@ -69,6 +73,7 @@ export class Attack extends Move {
           target.HP -= this.damage;
         }
         await this.owner.view.attackAnimation(target);
+        new Audio(SWING).play();
         console.log(`${target.name} has ${target.HP} health`);
       },
     };
@@ -100,6 +105,7 @@ export class Guard extends Move {
           duration: 0.2,
           ease: 'circ.in',
         });
+        new Audio(GUARD).play();
       },
     };
   }
@@ -141,6 +147,7 @@ export class Fling extends Move {
           ease: 'none',
         });
         this.owner.view.remove(projectile);
+        new Audio(SPLAT).play();
         await target.view.onHit(0.3);
       },
     };
