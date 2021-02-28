@@ -10,7 +10,7 @@ import {
 } from './Battle/game-manager';
 
 import {
-  whoIsDead
+  whoIsDead, gameOver
 } from './Battle/game-manager';
 
 import * as actors from './Battle/actor-prefabs';
@@ -77,7 +77,16 @@ MainMenu.onclick = () => {
   }
 
 
-  console.log("Loading level " + (level + 1));
+  if(gameOver){
+    level = 0;
+    aliveList = [true, true, true, true];
+    console.log("restarting...");
+
+  } else {
+
+    console.log("Loading level " + (level + 1));
+  }
+
 
   switch (level) {
     case 0:

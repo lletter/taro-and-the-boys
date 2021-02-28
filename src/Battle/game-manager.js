@@ -23,6 +23,7 @@ const GameState = {
   WON: 2,
 };
 
+export let gameOver = false;
 export let whoIsDead = [];
 
 
@@ -32,7 +33,9 @@ export class GameManager {
   }
 
   constructor(actors, scene, level) {
+    this.gameOver = false;
     this.level = level;
+    
     this.scene = scene;
     this.actors = actors;
     this.turnCount = 0;
@@ -180,6 +183,9 @@ export class GameManager {
       this.level++;
       console.log("Next Level");
       return GameState.WON;
-    } else return GameState.LOST;
+    } else {
+      gameOver = true;
+      return GameState.LOST;
+    }
   }
 }
