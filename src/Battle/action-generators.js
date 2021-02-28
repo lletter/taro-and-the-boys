@@ -114,7 +114,6 @@ export class Attack extends Move {
           ...start,
           ease: 'power1.in',
         });
-        console.log(`${target.name} has ${target.HP} health`);
       },
     };
   }
@@ -281,7 +280,6 @@ export class Throw extends Move {
           duration: 1,
           ...start,
         });
-        console.log(start);
       },
     };
   }

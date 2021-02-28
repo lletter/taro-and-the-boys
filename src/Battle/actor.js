@@ -54,7 +54,6 @@ export class Actor {
    * @param gm the game manager, so AI can see all state.
    */
   doMove(scene, gm) {
-    console.log(this.status);
     if (this.status === status.STUNNED) {
       gm.run(this.pass.generateAction());
       this.status = status.ALIVE;

@@ -36,7 +36,6 @@ export class Task {
    * end immediately.
    */
   constructor(actor, options = {}) {
-    console.log(options);
     this.actor = actor;
     this.visible = options.visible !== undefined ? options.visible : true;
   }
@@ -145,5 +144,21 @@ export class EndWhenEnemiesDie extends Task {
 
   get valid() {
     return this.actors.some((a) => a.HP > 0);
+  }
+}
+
+export class AtLeastOneAllyDead extends Task {
+  constructor(actors, options) {
+    super(undefined, options);
+    this.actors = [...actors];
+    this.description = 'LET AN ALLY DIE';
+  }
+
+  get fulfilled() {
+    return this.actors.some((a) => a.status === 'dead' || a.HP < 0);
+  }
+
+  get valid() {
+    return true;
   }
 }

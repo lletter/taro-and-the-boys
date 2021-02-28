@@ -29,7 +29,6 @@ export function loadSprite(url) {
 
 export function loadSpriteSheet(url, frames) {
   let s;
-  console.log(frames);
   const sprite = new Group();
   sprite.onload = [];
   const onload = (map) => {

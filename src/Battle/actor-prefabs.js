@@ -10,9 +10,9 @@ export const Taro = () =>
     defenseMod: 0.3,
     view: models.Taro(),
   })
-    .addMove(Attack, { name: 'Slash', damage: 5 })
+    .addMove(Attack, { name: 'Slash', damage: 9999 })
     .addMove(Guard)
-    .addMove(Throw, { damage: 40 });
+    .addMove(Throw, { damage: 800 });
 
 export const Monke = () =>
   new Actor({
@@ -57,6 +57,7 @@ export const Booba = () =>
     name: 'Booba',
     enemy: true,
     view: models.Bear(),
+    defenseMod: 0.5,
     HP: 250,
   })
     .addMove(Attack, { damage: 70 })
@@ -68,8 +69,40 @@ export const Beebo = () =>
     name: 'Beebo',
     enemy: true,
     view: models.Panda(),
+    defenseMod: 0.5,
     HP: 200,
   })
     .addMove(Multi, { damage: 20 })
     .addMove(Attack, { damage: 30 })
     .addMove(Guard);
+
+export const Dada = () =>
+  new Actor({
+    name: 'Dingalo',
+    enemy: true,
+    view: models.Panda(),
+    defenseMod: 0.5,
+    HP: 200,
+  })
+    .addMove(Multi, { damage: 20 })
+    .addMove(Attack, { damage: 30 })
+    .addMove(Guard);
+
+export const Deba = Beebo;
+export const Didi = Booba;
+export const Dodo = Beebo;
+
+export const Levels = {
+  1: {
+    actors: [Taro, Chicken, Doggy, Monke],
+    enemies: [Booba, Beebo],
+  },
+  2: {
+    actors: [],
+    enemies: [Dada, Deba],
+  },
+  3: {
+    actors: [],
+    enemies: [Didi, Dodo],
+  },
+};
