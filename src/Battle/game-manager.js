@@ -28,36 +28,23 @@ export class GameManager {
     this.scene = scene;
     this.actors = actors;
     this.turnCount = 0;
-    this.busy = false;
     this.run = this.run.bind(this);
-    this.playerCount = 0;
-    this.enemyCount = 0;
-    this.end = 0;
 
     // TODO: Add in customization parameters
     this.tasks = [
       new GuardInRowTask(actors[0]),
-      new StayAliveTask(actors[0]),
       new MustDieTask(actors[1]),
       new MustDieTask(actors[2]),
       new MustDieTask(actors[3]),
       new MustDieTask(actors[4], { visible: false }),
       new MustDieTask(actors[5], { visible: false }),
+      new StayAliveTask(actors[0]),
       new EndWhenEnemiesDie(actors.filter((a) => a.enemy)),
     ];
   }
 
   start() {
     this.scene.start(this);
-
-    for (let i = 0; i < this.actors.length; i++) {
-      if (this.actors[i].enemy) {
-        this.enemyCount++;
-      } else {
-        this.playerCount++;
-      }
-    }
-
     this.scene.openMenu(this, this.activeActor, this.run);
   }
 
@@ -71,6 +58,7 @@ export class GameManager {
       // Update our state and check if the match is over
       const current = this.statusCheck();
       if (current !== GameState.CONTINUE) {
+        this.scene.close();
         MainMenu.show();
         if (current === GameState.WON) {
           MainMenu.setHeader('YOU WON');
@@ -79,10 +67,10 @@ export class GameManager {
           MainMenu.setHeader('YOU LOST');
           const failedTasks = this.tasks.filter((t) => !t.fulfilled);
           const str = failedTasks.reduce(
-            (acc, val) => acc + val.description + '\n',
+            (acc, val) => acc + val.description + '<br/>',
             ''
           );
-          MainMenu.setDescription(`Next time, try to: \n
+          MainMenu.setDescription(`You failed at these tasks<br/>
             ${str}
           `);
         }
