@@ -1,6 +1,6 @@
 import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
-import { TARGETED } from './action-types';
+import { ALLY_TARGETED, DOUBLE_TARGETED, TARGETED } from './action-types';
 import Ground from '../data/Ground';
 import { Arrow } from '../data';
 import BattleMP3 from '../data/battle1.mp3';
@@ -104,6 +104,22 @@ export class BattleScene extends Scene {
             const enemies = gm.actors.filter((a) => a.enemy);
             const cb = (target) => callback(move.generateAction(target));
             this.subMenu(enemies, cb, this.menus[0]);
+            return;
+          }
+          case DOUBLE_TARGETED: {
+            const allies = gm.actors.filter((a) => !a.enemy && a !== actor);
+            const enemies = gm.actors.filter((a) => a.enemy);
+            const cb = (ally) => {
+              const cb2 = (enemy) => callback(move.generateAction(ally, enemy));
+              this.subMenu(enemies, cb2, this.menus[this.menus.length - 1]);
+            };
+            this.subMenu(allies, cb, this.menus[this.menus.length - 1]);
+            return;
+          }
+          case ALLY_TARGETED: {
+            const allies = gm.actors.filter((a) => !a.enemy && a !== actor);
+            const cb = (ally) => callback(move.generateAction(ally));
+            this.subMenu(allies, cb, this.menus[0]);
             return;
           }
           default: {

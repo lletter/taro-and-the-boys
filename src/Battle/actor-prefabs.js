@@ -1,17 +1,18 @@
 import * as models from '../data';
 import { Actor } from './actor';
-import { Attack, Guard, Fling } from './action-generators';
+import { Attack, Guard, Fling, Throw, Heal } from './action-generators';
 
 export const Taro = () =>
   new Actor({
     name: 'Taro',
-    HP: 100000,
+    HP: 100,
     MP: 150,
     defenseMod: 0.8,
     view: models.Taro(),
   })
     .addMove(Attack, { name: 'Slash', damage: 50 })
-    .addMove(Guard);
+    .addMove(Guard)
+    .addMove(Throw);
 
 export const Monke = () =>
   new Actor({
@@ -29,14 +30,15 @@ export const Monke = () =>
 export const Chicken = () =>
   new Actor({
     name: 'Chicken',
-    HP: 100,
+    HP: 70,
     MP: 200,
     defenseMod: 0.7,
     enemy: false,
     view: models.Chicken(),
   })
     .addMove(Attack, { damage: 10 })
-    .addMove(Guard, { damage: 10 });
+    .addMove(Guard, { damage: 10 })
+    .addMove(Heal, { restore: 30 });
 
 export const Doggy = () =>
   new Actor({

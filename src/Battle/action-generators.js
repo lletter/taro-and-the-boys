@@ -1,14 +1,23 @@
-import { TARGETED, SELF_TARGETED } from './action-types';
+import {
+  TARGETED,
+  SELF_TARGETED,
+  DOUBLE_TARGETED,
+  ALLY_TARGETED,
+} from './action-types';
 import { Poo, animation as createAnimation } from '../data';
 import { Vector3 } from 'three';
 
 import SPLAT from '../data/SFX/splat.wav';
 import SWING from '../data/SFX/sword.wav';
 import GUARD from '../data/SFX/guard.wav';
+import GRUNT from '../data/SFX/grunt.wav';
+import SMOOCH from '../data/SFX/smooch.wav';
 
 const SplatSound = new Audio(SPLAT);
 const SwingSound = new Audio(SWING);
 const GuardSound = new Audio(GUARD);
+const GruntSound = new Audio(GRUNT);
+const SmoochSound = new Audio(SMOOCH);
 
 // Global Status List
 const status = {
@@ -19,7 +28,7 @@ const status = {
 };
 
 function delay(time) {
-  return new Promise((resolve) => setTimeout(resolve, time));
+  return new Promise((resolve) => setTimeout(resolve, time * 1000));
 }
 
 /**
@@ -154,7 +163,6 @@ export class Fling extends Move {
       execute: async () => {
         target.status = status.STUNNED;
         target.HP -= this.damage;
-        console.log(`${target.name} has ${target.HP} health`);
 
         // Animation
         const projectile = Poo();
@@ -186,6 +194,89 @@ export class Stunned extends Move {
   generateAction() {
     return async () => {
       await delay(1000);
+    };
+  }
+}
+
+export class Throw extends Move {
+  constructor(owner, config = {}) {
+    super(owner, config);
+    this.type = DOUBLE_TARGETED;
+    this.damage = config.damage || 20;
+    this.name = this.name || 'Throw Ally';
+  }
+
+  generateAction(ally, enemy) {
+    return {
+      generator: this,
+      ally,
+      enemy,
+      execute: async () => {
+        ally.HP -= this.damage;
+        enemy.HP -= this.damage;
+
+        // Animation
+        const start = new Vector3().copy(ally.view.position);
+        const enemyWorld = new Vector3().copy(enemy.view.position);
+        ally.view.position.copy(this.owner.view.position);
+        GruntSound.currentTime = 0;
+        GruntSound.play();
+        await delay(0.75);
+        await createAnimation(ally.view.position, {
+          duration: 0.07,
+          x: enemyWorld.x,
+          y: enemyWorld.y,
+          z: enemyWorld.z,
+          ease: 'power4.in',
+        });
+        SplatSound.play();
+        enemy.updateView();
+        ally.updateView();
+        enemy.view.onHit(1);
+        await delay(0.2);
+        GruntSound.pause();
+        await createAnimation(ally.view.position, {
+          duration: 1,
+          ...start,
+        });
+        console.log(start);
+      },
+    };
+  }
+}
+
+export class Heal extends Move {
+  constructor(owner, config = {}) {
+    super(owner, config);
+    this.type = ALLY_TARGETED;
+    this.restore = config.restore || 20;
+    this.name = this.name || 'Feed Egg';
+  }
+
+  generateAction(ally) {
+    return {
+      generator: this,
+      execute: async () => {
+        ally.HP += this.restore;
+
+        // ANIMATION
+        const start = new Vector3().copy(this.owner.view.position);
+        const allyPos = new Vector3().copy(ally.view.position);
+        await createAnimation(this.owner.view.position, {
+          duration: 0.2,
+          x: allyPos.x,
+          y: allyPos.y,
+          z: allyPos.z,
+        });
+        SmoochSound.currentTime = 0;
+        SmoochSound.play();
+        ally.updateView();
+        await ally.view.onHit(0.8);
+        await createAnimation(this.owner.view.position, {
+          duration: 0.8,
+          ...start,
+        });
+      },
     };
   }
 }
