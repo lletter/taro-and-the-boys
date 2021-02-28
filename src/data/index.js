@@ -1,10 +1,10 @@
 import { Box3, Group, Vector3 } from 'three';
-import { loadSprite, createHealthBar } from './util';
+import { loadSprite, loadSpriteSheet, createHealthBar } from './util';
 import gsap from 'gsap';
-import TaroImg from './Taro/taro.png';
-import ChickenImg from './Chicken/chickfila.png';
-import DoggyImg from './Doggy/shibe.png';
-import MonkeImg from './Monke/monke.png';
+import TaroImg from './Taro/taro-Sheet.png';
+import ChickenImg from './Chicken/chickfila-Sheet.png';
+import DoggyImg from './Doggy/shibe-Sheet.png';
+import MonkeImg from './Monke/monke-Sheet.png';
 import BearImg from './Bear/bear.png';
 import PandaImg from './Panda/panda.png';
 import ShadowImg from './shadow.png';
@@ -23,16 +23,18 @@ export const animation = (object, options) => {
 };
 
 class View extends Group {
-  constructor(sprite, healthbar) {
+  constructor(sprite, healthbar, frames) {
     super();
-    this.sprite = sprite;
     this.health = healthbar;
-    this.add(sprite);
+    this.sprite = loadSpriteSheet(sprite, frames);
+    this.sprite.onload.push(() => this.updateSize());
+    this.add(this.sprite);
     this.add(healthbar);
     const shadow = Shadow();
     shadow.renderOrder = -1;
     shadow.material.depthTest = false;
     this.add(shadow);
+    this.updateSize();
   }
 
   setHealth(num) {
@@ -92,7 +94,7 @@ class View extends Group {
     });
   }
 
-  handleSpriteLoaded() {
+  updateSize() {
     this.bbox = new Box3().setFromObject(this);
     this.size = new Vector3();
     this.bbox.getSize(this.size);
@@ -102,23 +104,20 @@ class View extends Group {
 }
 
 export const instantiate = (options) => {
-  const { url, scale } = options;
+  const { url, scale, frames } = options;
 
-  const sprite = loadSprite(url);
   const health = createHealthBar();
-  const group = new View(sprite, health);
-  sprite.onload.push(() => group.handleSpriteLoaded());
-
-  scale && sprite.scale.multiplyScalar(scale);
+  const group = new View(url, health, frames);
+  scale && group.sprite.scale.multiplyScalar(scale);
   return group;
 };
 
 export const Shadow = () => loadSprite(ShadowImg);
 export const Poo = () => loadSprite(ChickenImg);
-export const Arrow = () => loadSprite(ChickenImg);
-export const Taro = () => instantiate({ url: TaroImg });
-export const Chicken = () => instantiate({ url: ChickenImg });
-export const Doggy = () => instantiate({ url: DoggyImg });
-export const Monke = () => instantiate({ url: MonkeImg });
-export const Bear = () => instantiate({ url: BearImg });
-export const Panda = () => instantiate({ url: PandaImg });
+export const Arrow = () => loadSpriteSheet(ChickenImg, 2);
+export const Taro = () => instantiate({ url: TaroImg, frames: 2 });
+export const Chicken = () => instantiate({ url: ChickenImg, frames: 2 });
+export const Doggy = () => instantiate({ url: DoggyImg, frames: 2 });
+export const Monke = () => instantiate({ url: MonkeImg, frames: 2 });
+export const Bear = () => instantiate({ url: BearImg, frames: 1 });
+export const Panda = () => instantiate({ url: PandaImg, frames: 1 });

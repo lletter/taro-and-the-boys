@@ -5,6 +5,7 @@ import {
   TextureLoader,
   NearestFilter,
 } from 'three';
+import { LoopedAnimation } from '../lib/SpriteAnimator';
 
 const loader = new TextureLoader();
 export function loadSprite(url) {
@@ -20,10 +21,31 @@ export function loadSprite(url) {
   const map = loader.load(url, onload);
   map.magFilter = NearestFilter;
   const mat = new SpriteMaterial({ map: map });
-  mat.map;
   const s = new Sprite(mat);
   sprite.add(s);
   sprite.material = mat;
+  return sprite;
+}
+
+export function loadSpriteSheet(url, frames) {
+  let s;
+  console.log(frames);
+  const sprite = new Group();
+  sprite.onload = [];
+  const onload = (map) => {
+    s.scale.y = map.image.height / (map.image.width / frames);
+    s.position.y = s.scale.y / 2;
+    sprite.add(s);
+    sprite.onload.forEach((h) => h());
+  };
+
+  const map = loader.load(url, onload);
+  map.magFilter = NearestFilter;
+  const mat = new SpriteMaterial({ map });
+  s = new Sprite(mat);
+  sprite.material = mat;
+  const animation = new LoopedAnimation(map, frames);
+  sprite.animation = animation;
   return sprite;
 }
 
