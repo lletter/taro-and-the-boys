@@ -46,6 +46,7 @@ export class BattleScene extends Scene {
 
     // The task list.
     this.taskList = document.getElementById('task-items');
+    this.taskList.innerHTML = '';
 
     /**
      * Maybe put this somewhere else haah
