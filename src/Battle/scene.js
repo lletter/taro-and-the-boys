@@ -69,7 +69,7 @@ export class BattleScene extends Scene {
     }
 
     gm.tasks
-      .filter((t) => t.visible)
+      // .filter((t) => t.visible)
       .forEach((t) => {
         if (t.fulfilled)
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;

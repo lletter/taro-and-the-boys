@@ -1,4 +1,9 @@
-import { MustDieTask, GuardInRowTask, StayAliveTask } from './tasks';
+import {
+  MustDieTask,
+  GuardInRowTask,
+  StayAliveTask,
+  EnemiesAlive,
+} from './tasks';
 
 const status = {
   ALIVE: 'alive',
@@ -8,8 +13,8 @@ const status = {
 };
 const GameState = {
   CONTINUE: 0,
-  PLAYERS_DEAD: 1,
-  ENEMIES_DEAD: 2,
+  LOST: 1,
+  WON: 2,
 };
 
 export class GameManager {
@@ -36,6 +41,7 @@ export class GameManager {
       new MustDieTask(actors[3]),
       new MustDieTask(actors[4], { visible: false }),
       new MustDieTask(actors[5], { visible: false }),
+      new EnemiesAlive(actors.filter((a) => a.enemy)),
     ];
   }
 
@@ -62,25 +68,30 @@ export class GameManager {
       this.scene.update(this);
 
       // Update our state and check if the match is over
-      if (this.statusCheck() != GameState.CONTINUE) {
-        this.scene.closeMenu();
+      const current = this.statusCheck();
+      if (current !== GameState.CONTINUE) {
+        if (current === GameState.WON) {
+          console.log('WON');
+        } else {
+          console.log('LOST');
+        }
         return;
       }
 
       // Skip over all stunned actors
       while (this.activeActor.status === status.STUNNED) {
-        console.log(this.activeActor.name + ' is stunned!');
         this.activeActor.status = status.ALIVE;
         this.turnCount++;
       }
 
       // Either generate our next action or open a menu to run it.
-      if (this.activeActor.enemy) {
-        this.run(this.activeActor.getAIAction(this));
-        return;
-      } else {
-        this.scene.openMenu(this, this.activeActor, this.run);
-      }
+      this.run(this.activeActor.getAIAction(this));
+      // if (this.activeActor.enemy) {
+      //   this.run(this.activeActor.getAIAction(this));
+      //   return;
+      // } else {
+      //   this.scene.openMenu(this, this.activeActor, this.run);
+      // }
     });
   }
 
@@ -107,12 +118,16 @@ export class GameManager {
       }
     }
 
-    // We should continue if a task is not fulfilled or we've broken a cannotBreak
-    const shouldContinue = this.tasks.some(
-      (t) => !t.fulfilled || (t.cannotBreak && !t.fulfilled)
-    );
+    // We should continue if a task is not fulfilled
+    const tasksLeft = (t) => !t.fulfilled || (t.cannotBreak && !t.fulfilled);
+    // We keep the cannotBreak tasks fulfilled
+    const tasksKept = (t) => !t.cannotBreak || t.fulfilled;
+    const shouldContinue =
+      this.tasks.some(tasksLeft) && this.tasks.every(tasksKept);
+    const won = this.tasks.every((t) => t.fulfilled);
 
     if (shouldContinue) return GameState.CONTINUE;
-    else return GameState.ENEMIES_DEAD;
+    if (won) return GameState.WON;
+    else return GameState.LOST;
   }
 }

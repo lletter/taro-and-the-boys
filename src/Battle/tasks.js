@@ -101,11 +101,26 @@ export class MustDieTask extends Task {
 export class StayAliveTask extends Task {
   constructor(actor, options) {
     super(actor, options);
-    this.visible = false;
     this.cannotBreak = true;
+    this.visible = false;
+    this.description = 'Hero Alive';
   }
 
   get fulfilled() {
     return this.actor.HP > 0;
+  }
+}
+
+export class EnemiesAlive extends Task {
+  constructor(actors, options) {
+    super(undefined, options);
+    this.cannotBreak = true;
+    this.visible = false;
+    this.actors = actors;
+    this.description = 'Enemies Alive';
+  }
+
+  get fulfilled() {
+    return this.actors.some((a) => a.HP > 0);
   }
 }

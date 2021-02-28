@@ -4,12 +4,12 @@ import { Attack, Guard, Fling } from './action-generators';
 
 export const Taro = new Actor({
   name: 'Taro',
-  HP: 100,
+  HP: 100000,
   MP: 150,
   defenseMod: 0.8,
   view: models.Taro(),
 });
-Taro.addMove(Attack, { name: 'Slash', damage: 5 });
+Taro.addMove(Attack, { name: 'Slash', damage: 500 });
 Taro.addMove(Guard);
 
 export const Monke = new Actor({
