@@ -51,7 +51,7 @@ export const Booba = new Actor({
   enemy: true,
   view: models.Bear(),
 });
-Booba.addMove(Attack, { damage: 10 });
+Booba.addMove(Attack, { damage: 60 });
 Booba.addMove(Guard);
 
 export const Beebo = new Actor({
@@ -59,5 +59,5 @@ export const Beebo = new Actor({
   enemy: true,
   view: models.Panda(),
 });
-Beebo.addMove(Attack, { damage: 10 });
+Beebo.addMove(Attack, { damage: 60 });
 Beebo.addMove(Guard);

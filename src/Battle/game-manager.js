@@ -1,4 +1,4 @@
-import { Tasks } from './tasks';
+import { MustDieTask, GuardInRowTask, StayAliveTask } from './tasks';
 
 const status = {
   ALIVE: 'alive',
@@ -28,11 +28,19 @@ export class GameManager {
     this.end = 0;
 
     // TODO: Add in customization parameters
-    this.tasks = new Tasks();
+    this.tasks = [
+      new GuardInRowTask(actors[0]),
+      new StayAliveTask(actors[0]),
+      new MustDieTask(actors[1]),
+      new MustDieTask(actors[2]),
+      new MustDieTask(actors[3]),
+      new MustDieTask(actors[4], { visible: false }),
+      new MustDieTask(actors[5], { visible: false }),
+    ];
   }
 
   start() {
-    this.scene.start(this.actors);
+    this.scene.start(this);
 
     for (let i = 0; i < this.actors.length; i++) {
       if (this.actors[i].enemy) {
@@ -46,24 +54,12 @@ export class GameManager {
   }
 
   run(action) {
-    // Check statuses of all actors and end conditons
-    this.statusCheck();
-
-    if (this.end != 0) {
-      this.scene.closeMenu();
-      console.log('GAME OVER');
-    }
-
-    // Ignore actions until the last one finished
-    console.log('It is ' + this.activeActor.name + "'s turn. ");
     this.scene.closeMenu();
-
-    // If stunned, skip move
-
-    action().then(() => {
+    action.execute().then(() => {
       this.turnCount += 1;
-      this.scene.update(this);
       this.actors.forEach((a) => a.updateView());
+      this.tasks.forEach((t) => t.update(action));
+      this.scene.update(this);
 
       // Update our state and check if the match is over
       if (this.statusCheck() != GameState.CONTINUE) {
@@ -96,31 +92,6 @@ export class GameManager {
       }
     }
 
-    // Draw actors status
-    for (let i = 0; i < this.actors.length; i++) {
-      // console.log(this.actors[i].name + " is " + this.actors[i].status)
-
-      switch (this.actors[i].status) {
-        case status.ALIVE:
-          // Play IDLE animation
-          // console.log(this.actors[i].name + " is alive!")
-
-          break;
-        case status.DEAD:
-          // Play DEAD animation
-          // console.log(this.actors[i].name + " has died!")
-
-          break;
-        case status.STUNNED:
-          // Play STUNNED animation
-          // console.log(this.actors[i].name + " has been stunned!")
-
-          break;
-        default:
-        // code block
-      }
-    }
-
     // Remove DEAD actors
     for (let i = 0; i < this.actors.length; i++) {
       if (this.actors[i].status == status.DEAD) {
@@ -136,22 +107,12 @@ export class GameManager {
       }
     }
 
-    // Check victory / defeat
-    if (this.playerCount == 0) {
-      console.log('You lose!');
-      return GameState.PLAYERS_DEAD;
-    }
+    // We should continue if a task is not fulfilled or we've broken a cannotBreak
+    const shouldContinue = this.tasks.some(
+      (t) => !t.fulfilled || (t.cannotBreak && !t.fulfilled)
+    );
 
-    if (this.enemyCount == 0) {
-      console.log('You win!!!');
-      this.tasks.enemiesDead = true;
-      return GameState.ENEMIES_DEAD;
-    }
-
-    return GameState.CONTINUE;
-    // // Tasks check
-    // if (this.tasks.checkConditions()) {
-    //   return 1;
-    // }
+    if (shouldContinue) return GameState.CONTINUE;
+    else return GameState.ENEMIES_DEAD;
   }
 }

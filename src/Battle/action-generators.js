@@ -59,14 +59,18 @@ export class Attack extends Move {
    * @param {Actor} target the target to attack
    */
   generateAction(target) {
-    return async () => {
-      if (target.status == status.DEFEND) {
-        target.HP -= this.damage * target.defenseMod;
-      } else {
-        target.HP -= this.damage;
-      }
-      await this.owner.view.attackAnimation(target);
-      console.log(`${target.name} has ${target.HP} health`);
+    return {
+      generator: this,
+      target: target,
+      execute: async () => {
+        if (target.status == status.DEFEND) {
+          target.HP -= this.damage * target.defenseMod;
+        } else {
+          target.HP -= this.damage;
+        }
+        await this.owner.view.attackAnimation(target);
+        console.log(`${target.name} has ${target.HP} health`);
+      },
     };
   }
 }
@@ -79,21 +83,24 @@ export class Guard extends Move {
   }
 
   generateAction() {
-    return async () => {
-      this.owner.status = status.DEFEND;
+    return {
+      generator: this,
+      execute: async () => {
+        this.owner.status = status.DEFEND;
 
-      // animation
-      const y = this.owner.view.position.y;
-      await createAnimation(this.owner.view.position, {
-        y: '+0.2',
-        duration: 0.2,
-        ease: 'circ.out',
-      });
-      await createAnimation(this.owner.view.position, {
-        y: y,
-        duration: 0.2,
-        ease: 'circ.in',
-      });
+        // animation
+        const y = this.owner.view.position.y;
+        await createAnimation(this.owner.view.position, {
+          y: '+0.2',
+          duration: 0.2,
+          ease: 'circ.out',
+        });
+        await createAnimation(this.owner.view.position, {
+          y: y,
+          duration: 0.2,
+          ease: 'circ.in',
+        });
+      },
     };
   }
 }
@@ -107,31 +114,35 @@ export class Fling extends Move {
   }
 
   generateAction(target) {
-    return async () => {
-      target.status = status.STUNNED;
-      target.HP -= this.damage;
-      console.log(`${target.name} has ${target.HP} health`);
+    return {
+      generator: this,
+      target: this,
+      execute: async () => {
+        target.status = status.STUNNED;
+        target.HP -= this.damage;
+        console.log(`${target.name} has ${target.HP} health`);
 
-      // Animation
-      const projectile = Poo();
-      this.owner.view.add(projectile);
-      projectile.scale.multiplyScalar(0.3);
-      projectile.position.y = this.owner.view.size.y / 2;
-      const a = new Vector3();
-      let b = new Vector3();
-      projectile.getWorldPosition(a);
-      target.view.getWorldPosition(b);
-      b = b.sub(a);
-      b.y = target.view.size.y / 2;
-      await createAnimation(projectile.position, {
-        duration: 0.3,
-        x: `${b.x}`,
-        y: `${b.y}`,
-        z: `${b.z}`,
-        ease: 'none',
-      });
-      this.owner.view.remove(projectile);
-      await target.view.onHit(0.3);
+        // Animation
+        const projectile = Poo();
+        this.owner.view.add(projectile);
+        projectile.scale.multiplyScalar(0.3);
+        projectile.position.y = this.owner.view.size.y / 2;
+        const a = new Vector3();
+        let b = new Vector3();
+        projectile.getWorldPosition(a);
+        target.view.getWorldPosition(b);
+        b = b.sub(a);
+        b.y = target.view.size.y / 2;
+        await createAnimation(projectile.position, {
+          duration: 0.3,
+          x: `${b.x}`,
+          y: `${b.y}`,
+          z: `${b.z}`,
+          ease: 'none',
+        });
+        this.owner.view.remove(projectile);
+        await target.view.onHit(0.3);
+      },
     };
   }
 }

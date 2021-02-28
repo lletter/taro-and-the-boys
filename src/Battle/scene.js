@@ -40,6 +40,9 @@ export class BattleScene extends Scene {
     this.menus = [];
     this.menus.push(document.querySelector('.actions-menu'));
 
+    // The task list.
+    this.taskList = document.getElementById('task-items');
+
     /**
      * Maybe put this somewhere else haah
      * Remove a menu from the menu stack on click.
@@ -58,8 +61,20 @@ export class BattleScene extends Scene {
    * Move the current arrow indicator, etc
    */
   update(gm) {
-    gm.activeActor.view.getWorldPosition(this.arrow.position);
-    this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
+    // if the sprite is loaded
+    if (gm.activeActor.view.size) {
+      gm.activeActor.view.getWorldPosition(this.arrow.position);
+      this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
+      this.taskList.innerHTML = '';
+    }
+
+    gm.tasks
+      .filter((t) => t.visible)
+      .forEach((t) => {
+        if (t.fulfilled)
+          this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
+        else this.taskList.innerHTML += `${t.description}<br/>`;
+      });
   }
 
   createMenu(root) {
@@ -147,13 +162,13 @@ export class BattleScene extends Scene {
     }
   }
 
-  start(actors) {
+  start(gm) {
     this.add(Ground);
 
     let allies = 0;
     let enemies = 0;
-    for (let i = 0; i < actors.length; i++) {
-      const actor = actors[i];
+    for (let i = 0; i < gm.actors.length; i++) {
+      const actor = gm.actors[i];
       if (actor.enemy) {
         actor.view.position.copy(config.enemyPositions[enemies]);
         this.add(actor.view);
@@ -165,11 +180,10 @@ export class BattleScene extends Scene {
       }
     }
 
-    actors[0].view.sprite.onload.push(() => {
-      actors[0].view.getWorldPosition(this.arrow.position);
-      this.arrow.position.y += actors[0].view.size.y + 0.3;
+    this.update(gm);
+    gm.activeActor.view.sprite.onload.push(() => {
+      gm.activeActor.view.getWorldPosition(this.arrow.position);
+      this.arrow.position.y += gm.activeActor.view.size.y + 0.3;
     });
   }
-
-  updateUI() {}
 }
