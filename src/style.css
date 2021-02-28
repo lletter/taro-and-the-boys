@@ -80,3 +80,13 @@ canvas {
   align-items: center;
   justify-content: center;
 }
+
+@font-face {
+  font-family: 'Brush Of Kent';
+  src: url('./data/Fonts/Brush\ Of\ Kent.ttf');
+}
+
+h1 {
+  font-family: 'Brush Of Kent';
+  font-size: 4rem;
+}
