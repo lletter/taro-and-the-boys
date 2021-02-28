@@ -1,3 +1,11 @@
+const status = {
+  ALIVE: 'alive',
+  DEAD: 'dead',
+  DEFEND: 'defend',
+  STUNNED: 'stunned',
+};
+import { Pass } from './action-generators';
+
 export class Actor {
   /**
    * @param {Object} opts
@@ -19,8 +27,7 @@ export class Actor {
     this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
     this.view = opts.view;
-    this.target = null;
-    this.action = null;
+    this.pass = new Pass(this);
   }
 
   updateView() {
@@ -46,11 +53,15 @@ export class Actor {
    * Do some AI (random) and run an action.
    * @param gm the game manager, so AI can see all state.
    */
-  getAIAction(gm) {
-    const friendlies = gm.actors.filter((a) => a.enemy !== this.enemy);
-    const move = this.moves[Math.floor(Math.random() * this.moves.length)];
-    const target = friendlies[Math.floor(Math.random() * friendlies.length)];
-    console.log('executing move', move.name, target.name);
-    return move.generateAction(target);
+  doMove(scene, gm) {
+    console.log(this.status);
+    if (this.status === status.STUNNED) {
+      gm.run(this.pass.generateAction());
+    } else if (!this.enemy) {
+      scene.openMenu(gm, this);
+    } else {
+      const move = this.moves[Math.floor(Math.random() * this.moves.length)];
+      move.doRandom(gm);
+    }
   }
 }

@@ -1,9 +1,3 @@
-import {
-  TARGETED,
-  SELF_TARGETED,
-  DOUBLE_TARGETED,
-  ALLY_TARGETED,
-} from './action-types';
 import { Poo, animation as createAnimation } from '../data';
 import { Vector3 } from 'three';
 
@@ -43,7 +37,6 @@ class Move {
   constructor(owner, options) {
     this.owner = owner;
     this.name = (options && options.name) || undefined;
-    this.type = SELF_TARGETED;
   }
 
   /**
@@ -51,11 +44,22 @@ class Move {
    * is run. Takes parameters based on type defined in constructor.
    */
   generateAction() {
-    return async function action() {
-      console.log(
-        'No move returned. Did you forget to extend generateAction()?'
-      );
+    return {
+      generator: this,
+      execute: async function action() {
+        console.log(
+          'No move returned. Did you forget to extend generateAction()?'
+        );
+      },
     };
+  }
+
+  onChosen(scene, gm) {
+    gm.run(this.generateAction());
+  }
+
+  doRandom(gm) {
+    gm.run(this.generateAction());
   }
 }
 
@@ -66,7 +70,6 @@ export class Attack extends Move {
    */
   constructor(owner, config) {
     super(owner, config);
-    this.type = TARGETED;
     this.damage = config.damage;
     this.name = this.name || 'Attack';
   }
@@ -116,17 +119,22 @@ export class Attack extends Move {
     };
   }
 
-  onChosen(scene, gm, done) {
+  onChosen(scene, gm) {
     const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
-    const callback = (enemy) => done(this.generateAction(enemy));
+    const callback = (enemy) => gm.run(this.generateAction(enemy));
     scene.subMenu(enemies, callback, scene.menus[scene.menus.length - 1]);
+  }
+
+  doRandom(gm) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    const target = enemies[Math.floor(Math.random() * enemies.length)];
+    gm.run(this.generateAction(target));
   }
 }
 
 export class Guard extends Move {
   constructor(owner, options) {
     super(owner, options);
-    this.type = SELF_TARGETED;
     this.name = this.name || 'Guard';
   }
 
@@ -153,15 +161,18 @@ export class Guard extends Move {
     };
   }
 
-  onChosen(scene, gm, done) {
-    done(this.generateAction());
+  onChosen(scene, gm) {
+    gm.run(this.generateAction());
+  }
+
+  doRandom(gm) {
+    gm.run(this.generateAction());
   }
 }
 
 export class Fling extends Move {
   constructor(owner, config) {
     super(owner, config);
-    this.type = TARGETED;
     this.damage = config.damage;
     this.name = this.name || 'Fling';
   }
@@ -199,25 +210,55 @@ export class Fling extends Move {
     };
   }
 
-  onChosen(scene, gm, done) {
+  onChosen(scene, gm) {
     const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
-    const callback = (enemy) => done(this.generateAction(enemy));
+    const callback = (enemy) => gm.run(this.generateAction(enemy));
     scene.subMenu(enemies, callback, scene.menus[scene.menus.length - 1]);
+  }
+
+  doRandom(gm) {
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    const target = enemies[Math.floor(Math.random() * enemies.length)];
+    gm.run(this.generateAction(target));
   }
 }
 
-export class Stunned extends Move {
+export class Pass extends Move {
   generateAction() {
-    return async () => {
-      await delay(1000);
+    return {
+      generator: this,
+      execute: async () => {
+        const start = {
+          x: this.owner.view.position.x,
+          y: this.owner.view.position.y,
+          z: this.owner.view.position.z,
+        };
+        const v = { t: 0 };
+        await createAnimation(v, {
+          duration: 1,
+          t: 1,
+          onUpdate: () => {
+            this.owner.view.position.x =
+              start.x +
+              (Math.cos(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+            this.owner.view.position.z =
+              start.z +
+              (Math.sin(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+          },
+        });
+        this.owner.view.position.copy(start);
+      },
     };
+  }
+
+  doRandom(gm) {
+    gm.run(this.generateAction());
   }
 }
 
 export class Throw extends Move {
   constructor(owner, config = {}) {
     super(owner, config);
-    this.type = DOUBLE_TARGETED;
     this.damage = config.damage || 20;
     this.name = this.name || 'Throw Ally';
   }
@@ -260,7 +301,7 @@ export class Throw extends Move {
     };
   }
 
-  onChosen(scene, gm, done) {
+  onChosen(scene, gm) {
     const allies = gm.actors.filter(
       (a) => a.enemy === this.owner.enemy && a !== this.owner
     );
@@ -271,16 +312,25 @@ export class Throw extends Move {
       scene.subMenu(enemies, onEnemyChosen);
     };
     const onEnemyChosen = (enemy) => {
-      done(this.generateAction(ally, enemy));
+      gm.run(this.generateAction(ally, enemy));
     };
     scene.subMenu(allies, onAllyChosen);
+  }
+
+  doRandom(gm) {
+    const allies = gm.actors.filter(
+      (a) => a.enemy === this.owner.enemy && a !== this.owner
+    );
+    const enemies = gm.actors.filter((a) => a.enemy !== this.owner.enemy);
+    const randomAlly = allies[Math.floor(Math.random() * allies.length)];
+    const randomEnemy = enemies[Math.floor(Math.random() * enemies.length)];
+    gm.run(this.generateAction(randomAlly, randomEnemy));
   }
 }
 
 export class Heal extends Move {
   constructor(owner, config = {}) {
     super(owner, config);
-    this.type = ALLY_TARGETED;
     this.restore = config.restore || 20;
     this.name = this.name || 'Feed Egg';
   }
@@ -312,11 +362,19 @@ export class Heal extends Move {
     };
   }
 
-  onChosen(scene, gm, done) {
+  onChosen(scene, gm) {
     const allies = gm.actors.filter(
       (a) => a.enemy === this.owner.enemy && a !== this.owner
     );
-    const callback = (chosen) => done(this.generateAction(chosen));
+    const callback = (chosen) => gm.run(this.generateAction(chosen));
     scene.subMenu(allies, callback, scene.menus[scene.menus.length - 1]);
+  }
+
+  doRandom(gm) {
+    const allies = gm.actors.filter(
+      (a) => a.enemy === this.owner.enemy && a !== this.owner
+    );
+    const randomAlly = allies[Math.floor(Math.random() * allies.length)];
+    gm.run(this.generateAction(randomAlly));
   }
 }

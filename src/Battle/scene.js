@@ -1,6 +1,5 @@
 import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
-import { ALLY_TARGETED, DOUBLE_TARGETED, TARGETED } from './action-types';
 import Ground from '../data/Ground';
 import { Arrow } from '../data';
 import BattleMP3 from '../data/battle1.mp3';
@@ -92,14 +91,14 @@ export class BattleScene extends Scene {
   /**
    * The main hook to open a menu and choose one of the actor's actions.
    */
-  openMenu(gm, actor, done) {
+  openMenu(gm, actor) {
     this.menus[0].style.visibility = 'visible';
     this.menus[0].style.pointerEvents = 'auto';
 
     actor.moves.forEach((move) => {
       this.createMenuItem(this.menus[0], move.name, () => {
         if (move.onChosen) {
-          move.onChosen(this, gm, done);
+          move.onChosen(this, gm);
           return;
         }
       });

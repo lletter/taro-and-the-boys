@@ -77,21 +77,8 @@ export class GameManager {
         return;
       }
 
-      // Skip over all stunned actors
-      while (this.activeActor.status === status.STUNNED) {
-        this.activeActor.status = status.ALIVE;
-        this.turnCount++;
-      }
-
       this.scene.update(this);
-
-      // Either generate our next action or open a menu to run it.
-      if (this.activeActor.enemy) {
-        this.run(this.activeActor.getAIAction(this));
-        return;
-      } else {
-        this.scene.openMenu(this, this.activeActor, this.run);
-      }
+      this.activeActor.doMove(this.scene, this);
     });
   }
 
