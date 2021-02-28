@@ -72,8 +72,32 @@ export class Attack extends Move {
         } else {
           target.HP -= this.damage;
         }
-        await this.owner.view.attackAnimation(target);
+
+        // ANIMATION
+        const time = 1;
+        const start = new Vector3().copy(this.owner.view.position); // Start position of animation
+        const a = new Vector3();
+        const b = new Vector3();
+        this.owner.view.getWorldPosition(a);
+        target.view.getWorldPosition(b);
+        const d = b.sub(a); // The delta distance to move
+        if (d.x > 0) d.x -= this.owner.view.size.x;
+        else d.x += this.owner.view.size.x;
+        const end = new Vector3().copy(this.owner.view.position).add(d); // End poisition
+        // Move towards enemy
+        await createAnimation(this.owner.view.position, {
+          duration: time / 3,
+          ...end,
+          ease: 'power1.in',
+        });
+        target.updateView();
         new Audio(SWING).play();
+        await target.view.onHit(time / 3);
+        await createAnimation(this.owner.view.position, {
+          duration: time / 3,
+          ...start,
+          ease: 'power1.in',
+        });
         console.log(`${target.name} has ${target.HP} health`);
       },
     };
@@ -95,6 +119,7 @@ export class Guard extends Move {
 
         // animation
         const y = this.owner.view.position.y;
+        new Audio(GUARD).play();
         await createAnimation(this.owner.view.sprite.position, {
           y: '+0.2',
           duration: 0.2,
@@ -105,7 +130,6 @@ export class Guard extends Move {
           duration: 0.2,
           ease: 'circ.in',
         });
-        new Audio(GUARD).play();
       },
     };
   }
