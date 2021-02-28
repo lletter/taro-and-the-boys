@@ -2,7 +2,7 @@ import { Color, Scene, Vector3 } from 'three';
 import { createPopper } from '@popperjs/core';
 import { TARGETED } from './action-types';
 import Ground from '../data/Ground';
-import { Arrow } from '../data';
+import { Arrow, Shadow } from '../data';
 
 const config = {
   allyPositions: [

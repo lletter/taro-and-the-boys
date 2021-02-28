@@ -1,12 +1,13 @@
-import TaroImg from './Taro/taro.png';
-import ChickenImg from './Chicken/chicken.png';
-import DoggyImg from './Doggy/doggy.png';
-import MonkeImg from './Monke/monke.png';
-import BearImg from './Bear/bear.png';
-import PandaImg from './Panda/panda.png';
 import { Box3, Group, Vector3 } from 'three';
 import { loadSprite, createHealthBar } from './util';
 import gsap from 'gsap';
+import TaroImg from './Taro/taro.png';
+import ChickenImg from './Chicken/chicken.png';
+import DoggyImg from './Doggy/shibe.png';
+import MonkeImg from './Monke/monke.png';
+import BearImg from './Bear/bear.png';
+import PandaImg from './Panda/panda.png';
+import ShadowImg from './shadow.png';
 
 export const animation = (object, options) => {
   const { onComplete, ...other } = options;
@@ -28,7 +29,10 @@ class View extends Group {
     this.health = healthbar;
     this.add(sprite);
     this.add(healthbar);
-    this.onload = [];
+    const shadow = Shadow();
+    shadow.renderOrder = -1;
+    shadow.material.depthTest = false;
+    this.add(shadow);
   }
 
   setHealth(num) {
@@ -109,9 +113,10 @@ export const instantiate = (options) => {
   return group;
 };
 
+export const Shadow = () => loadSprite(ShadowImg);
 export const Poo = () => loadSprite(ChickenImg);
 export const Arrow = () => loadSprite(ChickenImg);
-export const Taro = () => instantiate({ url: TaroImg, scale: 0.7 });
+export const Taro = () => instantiate({ url: TaroImg });
 export const Chicken = () => instantiate({ url: ChickenImg });
 export const Doggy = () => instantiate({ url: DoggyImg });
 export const Monke = () => instantiate({ url: MonkeImg });

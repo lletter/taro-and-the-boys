@@ -46,7 +46,7 @@ export class Actor {
    * @param gm the game manager, so AI can see all state.
    */
   getAIAction(gm) {
-    const friendlies = gm.actors.filter((a) => !a.enemy);
+    const friendlies = gm.actors.filter((a) => a.enemy !== this.enemy);
     const move = this.moves[Math.floor(Math.random() * this.moves.length)];
     const target = friendlies[Math.floor(Math.random() * friendlies.length)];
     console.log('executing move', move.name, target.name);

@@ -32,15 +32,17 @@ export class Task {
    * @param {Actor} actor the actor this applies to.
    * @param {Object} options
    * @param {boolean} options.visible does this show in task list
-   * @param {boolean} options.cannotBreak does this have to stay fulfilled
-   * for the entire round?
+   * @param {boolean} options.valid if a task becomes invalid, the round will
+   * end immediately.
    */
   constructor(actor, options = {}) {
     console.log(options);
     this.actor = actor;
     this.visible = options.visible !== undefined ? options.visible : true;
-    this.cannotBreak =
-      options.cannotBreak !== undefined ? options.cannotBreak : false;
+  }
+
+  get valid() {
+    return true;
   }
 
   fulfilled() {
@@ -101,7 +103,6 @@ export class MustDieTask extends Task {
 export class StayAliveTask extends Task {
   constructor(actor, options) {
     super(actor, options);
-    this.cannotBreak = true;
     this.visible = false;
     this.description = 'Hero Alive';
   }
@@ -109,18 +110,25 @@ export class StayAliveTask extends Task {
   get fulfilled() {
     return this.actor.HP > 0;
   }
+
+  get valid() {
+    return this.actor.HP <= 0;
+  }
 }
 
-export class EnemiesAlive extends Task {
+export class EndWhenEnemiesDie extends Task {
   constructor(actors, options) {
     super(undefined, options);
-    this.cannotBreak = true;
     this.visible = false;
     this.actors = actors;
-    this.description = 'Enemies Alive';
+    this.description = 'End on Enemies Dead';
   }
 
   get fulfilled() {
+    return true;
+  }
+
+  get valid() {
     return this.actors.some((a) => a.HP > 0);
   }
 }

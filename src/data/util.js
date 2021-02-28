@@ -1,4 +1,10 @@
-import { SpriteMaterial, Group, Sprite, TextureLoader } from 'three';
+import {
+  SpriteMaterial,
+  Group,
+  Sprite,
+  TextureLoader,
+  NearestFilter,
+} from 'three';
 
 const loader = new TextureLoader();
 export function loadSprite(url) {
@@ -12,7 +18,9 @@ export function loadSprite(url) {
   }
 
   const map = loader.load(url, onload);
+  map.magFilter = NearestFilter;
   const mat = new SpriteMaterial({ map: map });
+  mat.map;
   const s = new Sprite(mat);
   sprite.add(s);
   sprite.material = mat;

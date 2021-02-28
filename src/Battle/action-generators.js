@@ -90,12 +90,12 @@ export class Guard extends Move {
 
         // animation
         const y = this.owner.view.position.y;
-        await createAnimation(this.owner.view.position, {
+        await createAnimation(this.owner.view.sprite.position, {
           y: '+0.2',
           duration: 0.2,
           ease: 'circ.out',
         });
-        await createAnimation(this.owner.view.position, {
+        await createAnimation(this.owner.view.sprite.position, {
           y: y,
           duration: 0.2,
           ease: 'circ.in',

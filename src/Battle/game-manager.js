@@ -2,7 +2,7 @@ import {
   MustDieTask,
   GuardInRowTask,
   StayAliveTask,
-  EnemiesAlive,
+  EndWhenEnemiesDie,
 } from './tasks';
 
 const status = {
@@ -41,7 +41,7 @@ export class GameManager {
       new MustDieTask(actors[3]),
       new MustDieTask(actors[4], { visible: false }),
       new MustDieTask(actors[5], { visible: false }),
-      new EnemiesAlive(actors.filter((a) => a.enemy)),
+      new EndWhenEnemiesDie(actors.filter((a) => a.enemy)),
     ];
   }
 
@@ -118,12 +118,8 @@ export class GameManager {
       }
     }
 
-    // We should continue if a task is not fulfilled
-    const tasksLeft = (t) => !t.fulfilled || (t.cannotBreak && !t.fulfilled);
-    // We keep the cannotBreak tasks fulfilled
-    const tasksKept = (t) => !t.cannotBreak || t.fulfilled;
-    const shouldContinue =
-      this.tasks.some(tasksLeft) && this.tasks.every(tasksKept);
+    // We should continue if a task becomes invalid
+    const shouldContinue = this.tasks.some((t) => !t.valid || !t.fulfilled);
     const won = this.tasks.every((t) => t.fulfilled);
 
     if (shouldContinue) return GameState.CONTINUE;
