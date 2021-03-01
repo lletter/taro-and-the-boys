@@ -148,14 +148,20 @@ export class EndWhenEnemiesDie extends Task {
 }
 
 export class AtLeastOneAllyDead extends Task {
-  constructor(actors, options) {
+  constructor(gm, options) {
     super(undefined, options);
-    this.actors = [...actors];
-    this.description = 'LET AN ALLY DIE';
+    this.actors = gm.actors.filter((a) => !a.enemy && !a.name === 'Taro');
+    this.howMany = options.howMany || 1;
+    this.description = `${this.howMany} animal${
+      this.howMany > 1 ? 's' : ''
+    } must die this round.`;
   }
 
   get fulfilled() {
-    return this.actors.some((a) => a.status === 'dead' || a.HP < 0);
+    return (
+      this.actors.filter((a) => a.status === 'dead' || a.HP < 0).length >=
+      this.howMany
+    );
   }
 
   get valid() {

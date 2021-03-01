@@ -2,7 +2,6 @@ import { PerspectiveCamera, WebGLRenderer } from 'three';
 import { BattleScene } from './Battle/scene';
 import { GameManager } from './Battle/game-manager';
 import { gameState } from './game-data';
-import { Levels } from './Battle/actor-prefabs';
 import './style.css';
 import config from './config';
 import MainMenu from './MainMenu';

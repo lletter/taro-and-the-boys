@@ -2,7 +2,7 @@ import * as models from '../data';
 import * as profiles from '../data/Profiles';
 import { Actor } from './actor';
 import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
-import { ThrowAllyTimes } from './tasks';
+import { AtLeastOneAllyDead, ThrowAllyTimes } from './tasks';
 
 export const Taro = () =>
   new Actor({
@@ -105,20 +105,21 @@ export const Levels = {
     actors: [Taro, Chicken, Doggy, Monke],
     enemies: [Booba, Beebo],
     tasks: {
-      Taro: [{ type: ThrowAllyTimes, options: { times: 3 } }],
+      any: [{ type: AtLeastOneAllyDead, options: { howMany: 1 } }],
+      Taro: [{ type: ThrowAllyTimes, options: { times: 2 } }],
     },
   },
   2: {
     enemies: [Dada, Deba],
     tasks: {
-      Taro: [{ type: ThrowAllyTimes, options: { times: 4 } }],
+      Taro: [{ type: ThrowAllyTimes, options: { times: 3 } }],
     },
   },
   3: {
     actors: [],
     enemies: [Didi, Dodo],
     tasks: {
-      any: [],
+      any: [{ type: AtLeastOneAllyDead }],
       Taro: [{ type: ThrowAllyTimes, options: { times: 5 } }],
     },
   },

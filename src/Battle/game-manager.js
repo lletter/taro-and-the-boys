@@ -1,4 +1,4 @@
-import { StayAliveTask, EndWhenEnemiesDie, AtLeastOneAllyDead } from './tasks';
+import { StayAliveTask, EndWhenEnemiesDie } from './tasks';
 import MainMenu from '../MainMenu';
 import { gameState } from '../game-data';
 import { Levels } from './actor-prefabs';
@@ -41,15 +41,15 @@ export class GameManager {
     for (const [name, tasks] of Object.entries(data.tasks)) {
       if (name === 'any') {
         tasks.forEach((task) =>
-          this.tasks.push(new task.type(undefined, task.options))
+          this.tasks.push(new task.type(this, task.options))
         );
-        return;
-      }
-      const actor = this.actors.find((a) => a.name === name);
-      if (actor) {
-        tasks.forEach((task) => {
-          this.tasks.push(new task.type(actor, task.options));
-        });
+      } else {
+        const actor = this.actors.find((a) => a.name === name);
+        if (actor) {
+          tasks.forEach((task) => {
+            this.tasks.push(new task.type(actor, task.options));
+          });
+        }
       }
     }
   }

@@ -10,6 +10,5 @@ export const gameState = {
       const a = createActor();
       this.alive.push(a);
     });
-    console.log(this);
   },
 };

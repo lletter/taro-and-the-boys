@@ -93,7 +93,7 @@ export class BattleScene extends Scene {
     this.menus[0].style.pointerEvents = 'auto';
 
     actor.moves.forEach((move) => {
-      this.createMenuItem(this.menus[0], move.name, () => {
+      this.createMenuItem(this.menus[0], move, () => {
         if (move.onChosen) {
           move.onChosen(this, gm);
           return;
@@ -125,24 +125,40 @@ export class BattleScene extends Scene {
       const onHover = () =>
         choice.profile && this.changeProfile(choice.profile);
       const onClick = () => callback(choice);
-      this.createMenuItem(menu, choice.name, onClick, onHover);
+      this.createMenuItem(menu, choice, onClick, onHover);
     });
     root.appendChild(menu);
     this.menus.push(menu);
   }
 
-  createMenuItem(menu, label, onClick, onHover) {
-    const div = document.createElement('div');
-    div.classList.add('action-item');
-    div.innerHTML = label;
-    menu.appendChild(div);
-    div.addEventListener('click', (e) => {
+  /**
+   * Creates a menu item. Uses choice.name and choice.description
+   */
+  createMenuItem(menu, choice, onClick, onHover) {
+    const item = document.createElement('div');
+    item.classList.add('action-item');
+
+    if (choice.name) {
+      const label = document.createElement('div');
+      item.appendChild(label);
+      label.classList.add('action-item-label');
+      label.innerHTML = choice.name;
+    }
+
+    if (choice.description) {
+      const description = document.createElement('div');
+      item.appendChild(description);
+      description.classList.add('action-item-description');
+      description.innerHTML = choice.description;
+    }
+    menu.appendChild(item);
+    item.addEventListener('click', (e) => {
       e.stopPropagation();
-      this.setActive(div.parentElement, false);
+      this.setActive(item.parentElement, false); // Disable interactions on our menu
       onClick(e);
     });
-    div.addEventListener('mouseover', onHover);
-    return div;
+    item.addEventListener('mouseover', onHover);
+    return item;
   }
 
   closeMenu() {

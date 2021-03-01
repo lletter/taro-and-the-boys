@@ -72,6 +72,7 @@ export class Attack extends Move {
     super(owner, config);
     this.damage = config.damage;
     this.name = this.name || 'Attack';
+    this.description = `Do ${this.damage} damage.`;
   }
 
   /**
@@ -135,6 +136,9 @@ export class Guard extends Move {
   constructor(owner, options) {
     super(owner, options);
     this.name = this.name || 'Guard';
+    this.description = `Take ${Math.floor(
+      this.owner.defenseMod * 100
+    )}% damage until your next turn.`;
   }
 
   generateAction() {
@@ -174,6 +178,10 @@ export class Fling extends Move {
     super(owner, config);
     this.damage = config.damage;
     this.name = this.name || 'Fling';
+    this.stunChance = 0.5;
+    this.description = `Fling poo at an enemy.<br/>Has a ${Math.floor(
+      this.stunChance * 100
+    )}% chance to stun.`;
   }
 
   generateAction(target) {
@@ -181,7 +189,7 @@ export class Fling extends Move {
       generator: this,
       target: this,
       execute: async () => {
-        const stunned = Math.random() < 0.33;
+        const stunned = Math.random() < this.stunChance;
         if (stunned) target.status = status.STUNNED;
         target.HP -= this.damage;
 
@@ -245,6 +253,9 @@ export class Throw extends Move {
     super(owner, config);
     this.damage = config.damage || 20;
     this.name = this.name || 'Throw Ally';
+    this.description =
+      `Throw an ally for ${this.damage} damage.<br/>` +
+      `Does double damage if it kills the ally.`;
   }
 
   generateAction(ally, enemy) {
@@ -254,7 +265,8 @@ export class Throw extends Move {
       enemy,
       execute: async () => {
         ally.HP -= this.damage;
-        enemy.HP -= this.damage;
+        if (ally.HP <= this.damage) enemy.HP -= this.damage * 2;
+        else enemy.HP -= this.damage;
 
         // Animation
         const start = new Vector3().copy(ally.view.position);
@@ -316,6 +328,7 @@ export class Heal extends Move {
     super(owner, config);
     this.restore = config.restore || 20;
     this.name = this.name || 'Feed Egg';
+    this.description = `Restore ${this.restore} health to all allies.`;
   }
 
   async healOne(ally) {

@@ -73,14 +73,21 @@ canvas {
 
 .action-item {
   margin: 2px;
-  flex: 1 1 content;
+  padding: 4px;
+  flex: 1 1 100%;
   min-width: 128px;
   min-height: 128px;
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   box-shadow: inset 2px 2px 1px 1px rgba(0, 0, 100, 0.1);
   background-color: rgba(0, 0, 24, 0.1);
+}
+
+.action-item-description {
+  font-size: 14pt;
+  text-align: center;
 }
 
 .actions-menu .action-item {
