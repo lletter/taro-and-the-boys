@@ -1,8 +1,15 @@
-import { Color, Scene, Vector3 } from 'three';
-import Ground from '../data/Ground';
+import { Scene, Vector3 } from 'three';
 import { Arrow } from '../data';
+import { Day, Night } from '../data/Ground';
+// import {
+//   TaroProfile,
+//   ChickenProfile,
+//   DogProfile,
+//   MonkeProfile,
+// } from '../data/profiles';
 
 import BattleMP3 from '../data/battle1.mp3';
+import { gameState } from '../game-data';
 
 const BattleMusic = new Audio(BattleMP3);
 BattleMusic.volume = 0.05;
@@ -20,6 +27,10 @@ const config = {
     new Vector3(1.3, 0, 2),
     new Vector3(1, 0, 1),
   ],
+  levelBackgrounds: {
+    1: Day,
+    2: Night,
+  },
 };
 
 export class BattleScene extends Scene {
@@ -32,7 +43,7 @@ export class BattleScene extends Scene {
    */
   constructor() {
     super();
-    this.background = new Color(0xe6f9ff);
+    this.background = config.levelBackgrounds[gameState.level];
     this.arrow = Arrow();
     this.arrow.scale.multiplyScalar(0.5);
     this.arrow.material.depthWrite = false;
@@ -46,6 +57,8 @@ export class BattleScene extends Scene {
     // The task list.
     this.taskList = document.getElementById('task-items');
     this.taskList.innerHTML = '';
+
+    this.profileBox = document.getElementById('profile');
 
     /**
      * Maybe put this somewhere else haah
@@ -153,7 +166,6 @@ export class BattleScene extends Scene {
   start(gm) {
     BattleMusic.currentTime = 0;
     BattleMusic.play();
-    this.add(Ground);
 
     let allies = 0;
     let enemies = 0;
