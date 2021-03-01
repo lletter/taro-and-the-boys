@@ -35,8 +35,8 @@ export const Monke = () =>
     enemy: false,
   })
     .addMove(Attack, { name: 'Swipe', damage: 45 })
-    .addMove(Fling, { damage: 40 })
-    .addMove(Guard);
+    .addMove(Guard)
+    .addMove(Fling, { damage: 40 });
 
 export const Chicken = () =>
   new Actor({
@@ -121,7 +121,7 @@ export const God = () =>
     enemy: true,
     view: models.God(),
     defenseMod: 0.1,
-    HP: 400,
+    HP: 800,
   })
     .addMove(Multi, { damage: 50 })
     .addMove(Guard)

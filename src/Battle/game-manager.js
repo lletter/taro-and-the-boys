@@ -79,6 +79,8 @@ export class GameManager {
           if (gameState.level === 3) {
             MainMenu.setHeader('CONGRATULATIONS!');
             MainMenu.setDescription('Thanks for playing our game!</br>');
+            MainMenu.setButtonText('Play Again?');
+            gameState.over = true;
           }
           MainMenu.setHeader('YOU WON');
           MainMenu.setButtonText('Next Round');

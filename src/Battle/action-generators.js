@@ -99,8 +99,8 @@ export class Attack extends Move {
         this.owner.view.getWorldPosition(a);
         target.view.getWorldPosition(b);
         const d = b.sub(a); // The delta distance to move
-        if (d.x > 0) d.x -= this.owner.view.size.x;
-        else d.x += this.owner.view.size.x;
+        if (d.x > 0) d.x -= this.owner.view.scale.x;
+        else d.x += this.owner.view.scale.x;
         const end = new Vector3().copy(this.owner.view.position).add(d); // End poisition
         // Move towards enemy
         await createAnimation(this.owner.view.position, {

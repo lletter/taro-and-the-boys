@@ -4,7 +4,7 @@ export const gameState = {
   alive: [],
   init() {
     this.over = false;
-    this.level = 1;
+    this.level = 3;
     this.alive = [];
     Object.values(Levels[1].actors).forEach((createActor) => {
       const a = createActor();

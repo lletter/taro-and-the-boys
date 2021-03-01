@@ -119,7 +119,7 @@ export class StayAliveTask extends Task {
   constructor(actor, options) {
     super(actor, options);
     this.visible = false;
-    this.description = 'Hero Alive';
+    this.description = 'Taro must stay alive.';
   }
 
   get fulfilled() {
@@ -218,7 +218,10 @@ export class CannotHeal extends Task {
   }
 
   update(action) {
-    if (action.generator instanceof Heal) {
+    if (
+      action.generator.owner === this.actor &&
+      action.generator instanceof Heal
+    ) {
       this._fulfilled = false;
       this._valid = false;
     }
