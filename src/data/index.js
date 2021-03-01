@@ -79,10 +79,10 @@ class View extends Group {
       onUpdate: () => {
         this.position.x =
           start.x +
-          (Math.cos(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+          (Math.cos(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 10;
         this.position.z =
           start.z +
-          (Math.sin(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 4;
+          (Math.sin(v.t * Math.PI * 4) * (1 - Math.abs(v.t - 0.5))) / 10;
       },
       onComplete: () => {
         this.position.copy(start);

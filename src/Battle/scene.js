@@ -15,10 +15,10 @@ const config = {
     new Vector3(-1, 0, 1),
   ],
   enemyPositions: [
-    new Vector3(1.9, 0, 3.5),
-    new Vector3(1.6, 0, 2.5),
-    new Vector3(1.3, 0, 1.5),
-    new Vector3(1, 0, 0.5),
+    new Vector3(1.9, 0, 4),
+    new Vector3(1.6, 0, 3),
+    new Vector3(1.3, 0, 2),
+    new Vector3(1, 0, 1),
   ],
   levelBackgrounds: {
     1: Day,
@@ -39,7 +39,7 @@ export class BattleScene extends Scene {
     super();
     this.background = config.levelBackgrounds[gameState.level];
     this.arrow = Arrow();
-    this.arrow.scale.multiplyScalar(0.5);
+    this.arrow.scale.multiplyScalar(0.1);
     this.arrow.material.depthWrite = false;
     this.add(this.arrow);
 

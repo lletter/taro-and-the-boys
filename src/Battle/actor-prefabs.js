@@ -107,21 +107,28 @@ export const Slime = () =>
     .addMove(Attack, { damage: 5 })
     .addMove(Guard);
 
-export const Deba = Beebo;
-export const Didi = Booba;
-export const Dodo = Beebo;
+export const God = () =>
+  new Actor({
+    name: '人生壊滅沈没低下天使',
+    enemy: true,
+    view: models.God(),
+    defenseMod: 0.1,
+    HP: 400,
+  })
+    .addMove(Multi, { damage: 50 })
+    .addMove(Guard)
+    .addMove(Attack, { damage: 75 });
 
 export const Levels = {
   1: {
     actors: [Taro, Chicken, Doggy, Monke],
     enemies: [Slime, Slime, Slime, Slime],
     tasks: {
-      any: [{ type: AtLeastOneAllyDead, options: { howMany: 1 } }],
       Taro: [{ type: ThrowAllyTimes, options: { times: 2 } }],
     },
   },
   2: {
-    enemies: [Dada, Deba],
+    enemies: [Beebo, Booba],
     tasks: {
       any: [{ type: AtLeastOneAllyDead }],
       Chicken: [{ type: GuardInRowTask, options: { times: 2 } }],
@@ -130,7 +137,7 @@ export const Levels = {
   },
   3: {
     actors: [],
-    enemies: [Didi, Dodo],
+    enemies: [God],
     tasks: {
       Taro: [{ type: ThrowAllyTimes, options: { times: 5 } }],
     },
