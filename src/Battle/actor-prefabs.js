@@ -96,6 +96,17 @@ export const Dada = () =>
     .addMove(Attack, { damage: 30 })
     .addMove(Guard);
 
+export const Slime = () =>
+  new Actor({
+    name: 'Slime',
+    enemy: true,
+    view: models.Slime(),
+    defenseMod: 1,
+    HP: 80,
+  })
+    .addMove(Attack, { damage: 5 })
+    .addMove(Guard);
+
 export const Deba = Beebo;
 export const Didi = Booba;
 export const Dodo = Beebo;
@@ -103,7 +114,7 @@ export const Dodo = Beebo;
 export const Levels = {
   1: {
     actors: [Taro, Chicken, Doggy, Monke],
-    enemies: [Booba, Beebo],
+    enemies: [Slime, Slime, Slime, Slime],
     tasks: {
       any: [{ type: AtLeastOneAllyDead, options: { howMany: 1 } }],
       Taro: [{ type: ThrowAllyTimes, options: { times: 2 } }],

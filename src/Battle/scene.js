@@ -1,6 +1,6 @@
 import { Scene, Vector3 } from 'three';
 import { Arrow } from '../data';
-import { Day, Night } from '../data/Ground';
+import { Day, Night, Temple } from '../data/Ground';
 import BattleMP3 from '../data/battle1.mp3';
 import { gameState } from '../game-data';
 
@@ -23,6 +23,7 @@ const config = {
   levelBackgrounds: {
     1: Day,
     2: Night,
+    3: Temple,
   },
 };
 
@@ -190,11 +191,6 @@ export class BattleScene extends Scene {
     for (let i = 0; i < gm.actors.length; i++) {
       const actor = gm.actors[i];
 
-      // if (i < 4 && !aliveList[i]) {
-      //   actor.HP = 0;
-      // } else {
-      // console.log(actor.name + " has " + actor.HP + " HP")
-
       if (actor.enemy) {
         actor.view.position.copy(config.enemyPositions[enemies]);
         this.add(actor.view);
@@ -204,7 +200,6 @@ export class BattleScene extends Scene {
         this.add(actor.view);
         allies += 1;
       }
-      // }
     }
     this.initialActors = [...gm.actors];
 

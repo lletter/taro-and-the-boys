@@ -39,6 +39,7 @@ export class Actor {
     } else {
       this.view.visible = false;
     }
+    this.view.stunIndicator.visible = this.status === status.STUNNED;
   }
 
   /**

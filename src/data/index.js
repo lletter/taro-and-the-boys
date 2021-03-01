@@ -8,6 +8,10 @@ import MonkeImg from './Monke/monke-Sheet.png';
 import BeeboImg from './Beebo/beebort-Sheet.png';
 import BoobaImg from './Booba/booband-Sheet.png';
 import ShadowImg from './shadow.png';
+import GodImg from './God/God-Sheet.png';
+import PointerImg from './Pointer.png';
+import StunSheet from './Stun_effect-1-Sheet.png';
+import SlimeImg from './Slime/slimeboi-Sheet.png';
 
 export const animation = (object, options) => {
   const { onComplete, ...other } = options;
@@ -34,6 +38,11 @@ class View extends Group {
     shadow.renderOrder = -1;
     shadow.material.depthTest = false;
     this.add(shadow);
+    this.stunIndicator = loadSpriteSheet(StunSheet, 8, 10);
+    this.stunIndicator.scale.set(0.5, 0.5, 1);
+    this.stunIndicator.renderOrder = 5;
+    this.stunIndicator.visible = false;
+    this.add(this.stunIndicator);
     this.updateSize();
   }
 
@@ -123,6 +132,7 @@ class View extends Group {
     this.size = new Vector3();
     this.bbox.getSize(this.size);
     this.health.position.y = this.bbox.max.y + 0.1;
+    this.stunIndicator.position.y = this.bbox.max.y - 0.1;
     this.onload && this.onload.forEach((handler) => handler());
   }
 }
@@ -138,10 +148,12 @@ export const instantiate = (options) => {
 
 export const Shadow = () => loadSprite(ShadowImg);
 export const Poo = () => loadSprite(ChickenImg);
-export const Arrow = () => loadSpriteSheet(ChickenImg, 2);
+export const Arrow = () => loadSprite(PointerImg);
 export const Taro = () => instantiate({ url: TaroImg, frames: 2 });
 export const Chicken = () => instantiate({ url: ChickenImg, frames: 2 });
 export const Doggy = () => instantiate({ url: DoggyImg, frames: 2 });
 export const Monke = () => instantiate({ url: MonkeImg, frames: 2 });
 export const Beebo = () => instantiate({ url: BeeboImg, frames: 2 });
 export const Booba = () => instantiate({ url: BoobaImg, frames: 2 });
+export const God = () => instantiate({ url: GodImg, frames: 2 });
+export const Slime = () => instantiate({ url: SlimeImg, frames: 2 });

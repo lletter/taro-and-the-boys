@@ -27,7 +27,7 @@ export function loadSprite(url) {
   return sprite;
 }
 
-export function loadSpriteSheet(url, frames) {
+export function loadSpriteSheet(url, frames, fps) {
   let s;
   const sprite = new Group();
   sprite.onload = [];
@@ -43,7 +43,7 @@ export function loadSpriteSheet(url, frames) {
   const mat = new SpriteMaterial({ map });
   s = new Sprite(mat);
   sprite.material = mat;
-  const animation = new LoopedAnimation(map, frames);
+  const animation = new LoopedAnimation(map, frames, fps);
   sprite.animation = animation;
   return sprite;
 }

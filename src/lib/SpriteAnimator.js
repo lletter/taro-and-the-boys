@@ -1,7 +1,7 @@
 export class LoopedAnimation {
-  constructor(texture, frames) {
+  constructor(texture, frames, fps) {
     this.update = this.update.bind(this);
-    this.loopHandler = window.setInterval(this.update, 1000);
+    this.loopHandler = window.setInterval(this.update, 1000 / (fps || 1));
     this.frames = frames;
     this.texture = texture;
     this.texture.repeat.set(1 / this.frames, 1);

@@ -105,11 +105,32 @@ canvas {
   width: 100%;
 }
 
+#game-start {
+  border-style: solid;
+  border-width: 4px;
+  border-image: url('./data/Textbox/Textbox.png') 2 fill round;
+  background: transparent;
+  font-family: 'VT323';
+  font-size: 24pt;
+  width: 50%;
+  box-shadow: 4px 4px 0 0 black;
+}
+
 #main-menu {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
+  color: white;
+  font-family: 'VT323';
+  background-image: url('./Data/Ground/Background1.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#main-menu h1 {
+  font-size: 72px;
+  text-shadow: 2pt 2pt black;
 }
 
 #profile {
@@ -124,15 +145,11 @@ canvas {
 
 img,
 canvas {
+  image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
 @font-face {
   font-family: 'Brush Of Kent';
   src: url('./data/Fonts/Brush\ Of\ Kent.ttf');
-}
-
-h1 {
-  font-family: 'Brush Of Kent';
-  font-size: 4rem;
 }

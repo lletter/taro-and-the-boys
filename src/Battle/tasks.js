@@ -148,10 +148,11 @@ export class EndWhenEnemiesDie extends Task {
 }
 
 export class AtLeastOneAllyDead extends Task {
-  constructor(gm, options) {
+  constructor(gm, options = {}) {
     super(undefined, options);
     this.actors = gm.actors.filter((a) => !a.enemy && a.name !== 'Taro');
     this.howMany = options.howMany || 1;
+    console.log(this.howMany);
     this.description = `${this.howMany} animal${
       this.howMany > 1 ? 's' : ''
     } must die this round.`;

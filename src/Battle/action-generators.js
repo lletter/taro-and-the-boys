@@ -37,6 +37,7 @@ class Move {
   constructor(owner, options) {
     this.owner = owner;
     this.name = (options && options.name) || undefined;
+    this.description = '';
   }
 
   /**
