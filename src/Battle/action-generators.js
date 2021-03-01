@@ -150,6 +150,7 @@ export class Guard extends Move {
 
         // animation
         const y = this.owner.view.position.y;
+        GuardSound.currentTime = 0;
         GuardSound.play();
         await createAnimation(this.owner.view.sprite.position, {
           y: '+0.2',
@@ -216,6 +217,7 @@ export class Fling extends Move {
         SplatSound.play();
         await target.view.onHit(0.3);
         await delay(0.75);
+        if (stunned) target.updateView();
         if (stunned) await target.view.onStun(1);
       },
     };
