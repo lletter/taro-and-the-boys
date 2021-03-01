@@ -37,8 +37,8 @@ class View extends Group {
     this.updateSize();
   }
 
-  setHealth(num) {
-    gsap.to(this.health, { duration: 1, percent: num });
+  setHealth(current, max) {
+    gsap.to(this.health, { duration: 1, percent: current / max });
   }
 
   onHit(duration) {

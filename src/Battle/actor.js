@@ -27,6 +27,7 @@ export class Actor {
     this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
     this.view = opts.view;
+    this.view.health.setMax(this.maxHP);
     this.profile = opts.profile;
     this.pass = new Pass(this);
   }
@@ -34,7 +35,7 @@ export class Actor {
   updateView() {
     // Set visibility if dead
     if (this.HP > 0) {
-      this.view.setHealth(this.HP / this.maxHP);
+      this.view.setHealth(this.HP, this.maxHP);
     } else {
       this.view.visible = false;
     }

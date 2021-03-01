@@ -60,6 +60,12 @@ export function createHealthBar() {
   g.scale.x = 0.5;
   g.add(outerBar);
   g.add(innerBar);
+
+  // Bigger HP Pools have bigger healthbars
+  g.setMax = (maxHP) => {
+    g.scale.x = maxHP / 200;
+  };
+
   Object.defineProperty(g, 'percent', {
     set: function (x) {
       const v = Math.max(0, x);
