@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
 html,
 body,
 canvas {
@@ -29,11 +31,12 @@ canvas {
   align-items: stretch;
   justify-content: center;
   position: absolute;
-  box-shadow: 4px 4px 1px 1px gray;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
   width: 100%;
   border-style: solid;
   border-width: 4px;
   border-image: url('./data/Textbox/Textbox.png') 2 fill round;
+  font-family: 'VT323';
 }
 
 #tasks {
@@ -47,6 +50,11 @@ canvas {
 
 .tasks-header {
   margin-bottom: 1rem;
+}
+
+#task-items {
+  font-size: 16pt;
+  color: #37271f;
 }
 
 .profile-photo {
@@ -73,12 +81,12 @@ canvas {
   justify-content: center;
   box-shadow: inset 2px 2px 1px 1px rgba(0, 0, 100, 0.1);
   background-color: rgba(0, 0, 24, 0.1);
-  font-family: 'Brush Of Kent';
 }
 
 .actions-menu .action-item {
   font-size: 36px;
-  text-shadow: 2px 2px #574f38;
+  color: #37271f;
+  text-shadow: 1px 1px 0px gray;
 }
 .actions-menu .action-item:hover {
   background-color: rgba(0, 0, 0, 0.3);
@@ -95,6 +103,17 @@ canvas {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#profile img {
+  height: 100%;
+  width: 100%;
+  filter: drop-shadow(4px 0px 0px gray);
+}
+
+img,
+canvas {
+  image-rendering: crisp-edges;
 }
 
 @font-face {

@@ -1,13 +1,6 @@
 import { Scene, Vector3 } from 'three';
 import { Arrow } from '../data';
 import { Day, Night } from '../data/Ground';
-// import {
-//   TaroProfile,
-//   ChickenProfile,
-//   DogProfile,
-//   MonkeProfile,
-// } from '../data/profiles';
-
 import BattleMP3 from '../data/battle1.mp3';
 import { gameState } from '../game-data';
 
@@ -22,10 +15,10 @@ const config = {
     new Vector3(-1, 0, 1),
   ],
   enemyPositions: [
-    new Vector3(1.9, 0, 4),
-    new Vector3(1.6, 0, 3),
-    new Vector3(1.3, 0, 2),
-    new Vector3(1, 0, 1),
+    new Vector3(1.9, 0, 3.5),
+    new Vector3(1.6, 0, 2.5),
+    new Vector3(1.3, 0, 1.5),
+    new Vector3(1, 0, 0.5),
   ],
   levelBackgrounds: {
     1: Day,
@@ -79,10 +72,8 @@ export class BattleScene extends Scene {
    */
   update(gm) {
     // if the sprite is loaded
-    if (gm.activeActor.view.size) {
-      gm.activeActor.view.getWorldPosition(this.arrow.position);
-      this.arrow.position.y = 1.2;
-    }
+    gm.activeActor.view.getWorldPosition(this.arrow.position);
+    this.arrow.position.y = 1.2;
     this.taskList.innerHTML = '';
     gm.tasks
       .filter((t) => t.visible)
@@ -91,6 +82,7 @@ export class BattleScene extends Scene {
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
         else this.taskList.innerHTML += `${t.description}<br/>`;
       });
+    this.changeProfile(gm.activeActor.profile);
   }
 
   /**
@@ -110,6 +102,11 @@ export class BattleScene extends Scene {
     });
   }
 
+  changeProfile(profile) {
+    this.profileBox.innerHTML = '';
+    this.profileBox.appendChild(profile);
+  }
+
   /**
    * Open a sub-menu for targeting enemies and such.
    * @param {function} callback takes a callback function to execute with one
@@ -121,16 +118,20 @@ export class BattleScene extends Scene {
     const menu = document.createElement('div');
     menu.classList.add('menu', 'submenu');
     menu.style.transform = 'translateY(-8px)';
+
+    // Create a menu item for each of our choices
     choices.forEach((choice) => {
-      this.createMenuItem(menu, choice.name, () => {
-        callback(choice);
-      });
+      // If our choice is an Actor,
+      const onHover = () =>
+        choice.profile && this.changeProfile(choice.profile);
+      const onClick = () => callback(choice);
+      this.createMenuItem(menu, choice.name, onClick, onHover);
     });
     root.appendChild(menu);
     this.menus.push(menu);
   }
 
-  createMenuItem(menu, label, onClick) {
+  createMenuItem(menu, label, onClick, onHover) {
     const div = document.createElement('div');
     div.classList.add('action-item');
     div.innerHTML = label;
@@ -140,6 +141,7 @@ export class BattleScene extends Scene {
       this.setActive(div.parentElement, false);
       onClick(e);
     });
+    div.addEventListener('mouseover', onHover);
     return div;
   }
 

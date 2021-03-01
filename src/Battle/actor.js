@@ -27,6 +27,7 @@ export class Actor {
     this.enemy = opts.enemy || false;
     this.status = status.ALIVE;
     this.view = opts.view;
+    this.profile = opts.profile;
     this.pass = new Pass(this);
   }
 

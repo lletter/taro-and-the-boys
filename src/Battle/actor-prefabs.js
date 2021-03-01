@@ -1,4 +1,5 @@
 import * as models from '../data';
+import * as profiles from '../data/Profiles';
 import { Actor } from './actor';
 import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
 
@@ -9,6 +10,7 @@ export const Taro = () =>
     MP: 150,
     defenseMod: 0.3,
     view: models.Taro(),
+    profile: profiles.TaroProfile,
   })
     .addMove(Attack, { name: 'Slash', damage: 20 })
     .addMove(Guard)
@@ -21,6 +23,7 @@ export const Monke = () =>
     MP: 50,
     defenseMod: 0.5,
     view: models.Monke(),
+    profile: profiles.MonkeProfile,
     enemy: false,
   })
     .addMove(Attack, { name: 'Swipe', damage: 45 })
@@ -35,6 +38,7 @@ export const Chicken = () =>
     defenseMod: 0.5,
     enemy: false,
     view: models.Chicken(),
+    profile: profiles.ChickenProfile,
   })
     .addMove(Attack, { damage: 10 })
     .addMove(Guard)
@@ -48,28 +52,31 @@ export const Doggy = () =>
     defenseMod: 0.3,
     enemy: false,
     view: models.Doggy(),
+    profile: profiles.ShibeProfile,
   })
     .addMove(Attack, { name: 'Bite', damage: 110 })
     .addMove(Guard);
 
-export const Booba = () =>
+export const Beebo = () =>
   new Actor({
-    name: 'Booba',
+    name: 'Beebo',
     enemy: true,
-    view: models.Bear(),
+    view: models.Beebo(),
     defenseMod: 0.5,
+    profile: profiles.BeeboProfile,
     HP: 250,
   })
     .addMove(Attack, { damage: 70 })
     .addMove(Guard)
     .addMove(Heal, { restore: 30 });
 
-export const Beebo = () =>
+export const Booba = () =>
   new Actor({
-    name: 'Beebo',
+    name: 'Booba',
     enemy: true,
-    view: models.Panda(),
+    view: models.Booba(),
     defenseMod: 0.5,
+    profile: profiles.BoobaProfile,
     HP: 200,
   })
     .addMove(Multi, { damage: 20 })
@@ -80,7 +87,7 @@ export const Dada = () =>
   new Actor({
     name: 'Dingalo',
     enemy: true,
-    view: models.Panda(),
+    view: models.Booba(),
     defenseMod: 0.5,
     HP: 200,
   })

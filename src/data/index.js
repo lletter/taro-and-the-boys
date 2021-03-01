@@ -5,8 +5,8 @@ import TaroImg from './Taro/taro-Sheet.png';
 import ChickenImg from './Chicken/chickfila-Sheet.png';
 import DoggyImg from './Doggy/shibe-Sheet.png';
 import MonkeImg from './Monke/monke-Sheet.png';
-import BearImg from './Bear/bear.png';
-import PandaImg from './Panda/panda.png';
+import BeeboImg from './Beebo/beebort-Sheet.png';
+import BoobaImg from './Booba/booband-Sheet.png';
 import ShadowImg from './shadow.png';
 
 export const animation = (object, options) => {
@@ -143,5 +143,5 @@ export const Taro = () => instantiate({ url: TaroImg, frames: 2 });
 export const Chicken = () => instantiate({ url: ChickenImg, frames: 2 });
 export const Doggy = () => instantiate({ url: DoggyImg, frames: 2 });
 export const Monke = () => instantiate({ url: MonkeImg, frames: 2 });
-export const Bear = () => instantiate({ url: BearImg, frames: 1 });
-export const Panda = () => instantiate({ url: PandaImg, frames: 1 });
+export const Beebo = () => instantiate({ url: BeeboImg, frames: 2 });
+export const Booba = () => instantiate({ url: BoobaImg, frames: 2 });
