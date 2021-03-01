@@ -150,7 +150,7 @@ export class Guard extends Move {
 
         // animation
         const y = this.owner.view.position.y;
-        GuardSound.currentTime = 0;
+        GuardSound.currentTime = 0.0;
         GuardSound.play();
         await createAnimation(this.owner.view.sprite.position, {
           y: '+0.2',
@@ -162,6 +162,7 @@ export class Guard extends Move {
           duration: 0.2,
           ease: 'circ.in',
         });
+        await delay(0.3);
       },
     };
   }
