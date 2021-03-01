@@ -2,6 +2,7 @@ import * as models from '../data';
 import * as profiles from '../data/Profiles';
 import { Actor } from './actor';
 import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
+import { ThrowAllyTimes } from './tasks';
 
 export const Taro = () =>
   new Actor({
@@ -12,7 +13,7 @@ export const Taro = () =>
     view: models.Taro(),
     profile: profiles.TaroProfile,
   })
-    .addMove(Attack, { name: 'Slash', damage: 20 })
+    .addMove(Attack, { name: 'Slash', damage: 45 })
     .addMove(Guard)
     .addMove(Throw, { damage: 70 });
 
@@ -27,7 +28,7 @@ export const Monke = () =>
     enemy: false,
   })
     .addMove(Attack, { name: 'Swipe', damage: 45 })
-    .addMove(Fling, { damage: 25 })
+    .addMove(Fling, { damage: 40 })
     .addMove(Guard);
 
 export const Chicken = () =>
@@ -42,7 +43,7 @@ export const Chicken = () =>
   })
     .addMove(Attack, { damage: 10 })
     .addMove(Guard)
-    .addMove(Heal, { name: 'Feed Eggs', restore: 30 });
+    .addMove(Heal, { name: 'Feed Eggs', restore: 20 });
 
 export const Doggy = () =>
   new Actor({
@@ -103,13 +104,22 @@ export const Levels = {
   1: {
     actors: [Taro, Chicken, Doggy, Monke],
     enemies: [Booba, Beebo],
+    tasks: {
+      Taro: [{ type: ThrowAllyTimes, options: { times: 3 } }],
+    },
   },
   2: {
-    actors: [],
     enemies: [Dada, Deba],
+    tasks: {
+      Taro: [{ type: ThrowAllyTimes, options: { times: 4 } }],
+    },
   },
   3: {
     actors: [],
     enemies: [Didi, Dodo],
+    tasks: {
+      any: [],
+      Taro: [{ type: ThrowAllyTimes, options: { times: 5 } }],
+    },
   },
 };

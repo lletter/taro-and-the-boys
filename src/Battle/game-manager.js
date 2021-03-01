@@ -1,13 +1,7 @@
-import {
-  // MustDieTask,
-  // GuardInRowTask,
-  StayAliveTask,
-  EndWhenEnemiesDie,
-  // EnemyMustDieTask,
-  AtLeastOneAllyDead,
-} from './tasks';
+import { StayAliveTask, EndWhenEnemiesDie, AtLeastOneAllyDead } from './tasks';
 import MainMenu from '../MainMenu';
 import { gameState } from '../game-data';
+import { Levels } from './actor-prefabs';
 
 const status = {
   ALIVE: 'alive',
@@ -27,22 +21,37 @@ export class GameManager {
     return this.actors[this.turnCount % this.actors.length];
   }
 
-  constructor(actors, scene) {
+  constructor(level, scene) {
     this.gameOver = false;
 
     this.scene = scene;
-    this.actors = actors;
     this.turnCount = 0;
     this.run = this.run.bind(this);
 
+    // Get the level data and load the level
+    const data = Levels[level];
+    this.actors = [...gameState.alive, ...data.enemies.map((a) => a())];
+
+    // Load tasks
     this.tasks = [
-      //new GuardInRowTask(actors[0]),
-      new StayAliveTask(actors[0]),
-      new EndWhenEnemiesDie(actors.filter((a) => a.enemy)),
-      new AtLeastOneAllyDead(
-        actors.filter((a) => !a.enemy && a.name !== actors[0].name)
-      ),
+      new StayAliveTask(this.actors[0]),
+      new EndWhenEnemiesDie(this.actors.filter((a) => a.enemy)),
     ];
+
+    for (const [name, tasks] of Object.entries(data.tasks)) {
+      if (name === 'any') {
+        tasks.forEach((task) =>
+          this.tasks.push(new task.type(undefined, task.options))
+        );
+        return;
+      }
+      const actor = this.actors.find((a) => a.name === name);
+      if (actor) {
+        tasks.forEach((task) => {
+          this.tasks.push(new task.type(actor, task.options));
+        });
+      }
+    }
   }
 
   start() {

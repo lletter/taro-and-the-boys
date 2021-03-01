@@ -1,4 +1,4 @@
-import { Guard } from './action-generators';
+import { Guard, Throw } from './action-generators';
 
 /**
  * @param {Task[]} tasks
@@ -160,5 +160,31 @@ export class AtLeastOneAllyDead extends Task {
 
   get valid() {
     return true;
+  }
+}
+
+export class ThrowAllyTimes extends Task {
+  constructor(actor, options) {
+    super(actor, options);
+    this.times = options.times || 3;
+    this.thrown = 0;
+  }
+
+  get description() {
+    return `Throw an ally ${this.times} times. (${this.thrown}/${this.times})`;
+  }
+
+  get fulfilled() {
+    return this.thrown >= this.times;
+  }
+
+  get valid() {
+    return true;
+  }
+
+  update(action) {
+    if (action.generator instanceof Throw) {
+      this.thrown++;
+    }
   }
 }

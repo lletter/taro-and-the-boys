@@ -28,10 +28,8 @@ MainMenu.onclick = () => {
   if (gameState.over) {
     gameState.init();
   }
-  const enemies = Levels[gameState.level].enemies.map((a) => a());
-  const levelActors = [...gameState.alive, ...enemies];
   scene = new BattleScene();
-  const manager = new GameManager(levelActors, scene);
+  const manager = new GameManager(gameState.level, scene);
   manager.start();
   root.style.display = 'block';
 };
