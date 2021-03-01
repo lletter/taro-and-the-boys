@@ -50,7 +50,7 @@ export const Chicken = () =>
   })
     .addMove(Attack, { damage: 10 })
     .addMove(Guard)
-    .addMove(Heal, { name: 'Feed Eggs', restore: 20 });
+    .addMove(Heal, { name: 'Feed Eggs', restore: 40 });
 
 export const Doggy = () =>
   new Actor({

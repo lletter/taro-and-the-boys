@@ -46,6 +46,7 @@ export function loadSpriteSheet(url, frames, fps) {
   const map = loader.load(url, onload);
   map.magFilter = NearestFilter;
   const mat = new SpriteMaterial({ map });
+  mat.depthWrite = false;
   s = new Sprite(mat);
   sprite.material = mat;
   const animation = new LoopedAnimation(map, frames, fps);
