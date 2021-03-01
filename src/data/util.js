@@ -7,13 +7,16 @@ import {
 } from 'three';
 import { LoopedAnimation } from '../lib/SpriteAnimator';
 
+const spriteScale = 100;
+
 const loader = new TextureLoader();
 export function loadSprite(url) {
   const sprite = new Group();
   sprite.onload = [];
 
   function onload(data) {
-    s.scale.y = data.image.height / data.image.width;
+    s.scale.y = data.image.height / spriteScale;
+    s.scale.x = data.image.width / spriteScale;
     s.position.y = s.scale.y / 2;
     sprite.onload.forEach((handler) => handler());
   }
@@ -32,7 +35,9 @@ export function loadSpriteSheet(url, frames, fps) {
   const sprite = new Group();
   sprite.onload = [];
   const onload = (map) => {
-    s.scale.y = map.image.height / (map.image.width / frames);
+    s.scale.y = (map.image.height / spriteScale) * frames;
+    s.scale.x = map.image.width / spriteScale;
+    // s.scale.y = map.image.height / (map.image.width / frames);
     s.position.y = s.scale.y / 2;
     sprite.add(s);
     sprite.onload.forEach((h) => h());

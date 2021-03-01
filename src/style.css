@@ -128,6 +128,11 @@ canvas {
   background-size: cover;
 }
 
+#main-menu-message {
+  font-size: 48pt;
+  text-shadow: 2pt 2pt black;
+}
+
 #main-menu h1 {
   font-size: 72px;
   text-shadow: 2pt 2pt black;

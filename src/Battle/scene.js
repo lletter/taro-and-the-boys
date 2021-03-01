@@ -8,18 +8,18 @@ const BattleMusic = new Audio(BattleMP3);
 BattleMusic.volume = 0.05;
 
 const config = {
-  allyPositions: [
-    new Vector3(-1.9, 0, 4),
-    new Vector3(-1.6, 0, 3),
-    new Vector3(-1.3, 0, 2),
-    new Vector3(-1, 0, 1),
-  ],
-  enemyPositions: [
-    new Vector3(1.9, 0, 4),
-    new Vector3(1.6, 0, 3),
-    new Vector3(1.3, 0, 2),
-    new Vector3(1, 0, 1),
-  ],
+  start: new Vector3(2.1, 0, 4.2),
+  end: new Vector3(0.8, 0, 0.8),
+  line(t, target) {
+    if (t < 0) t = 0;
+    if (t > 1) t = 1;
+    let { x, y, z } = this.start;
+    x += (this.end.x - x) * t;
+    y += (this.end.y - y) * t;
+    z += (this.end.z - z) * t;
+    target.set(x, y, z);
+    return this.start;
+  },
   levelBackgrounds: {
     1: Day,
     2: Night,
@@ -39,7 +39,6 @@ export class BattleScene extends Scene {
     super();
     this.background = config.levelBackgrounds[gameState.level];
     this.arrow = Arrow();
-    this.arrow.scale.multiplyScalar(0.1);
     this.arrow.material.depthWrite = false;
     this.add(this.arrow);
 
@@ -74,12 +73,13 @@ export class BattleScene extends Scene {
   update(gm) {
     // if the sprite is loaded
     gm.activeActor.view.getWorldPosition(this.arrow.position);
-    this.arrow.position.y = 1.2;
+    this.arrow.position.y = 1.6;
+    this.arrow.position.x += 0.05;
     this.taskList.innerHTML = '';
     gm.tasks
       .filter((t) => t.visible)
       .forEach((t) => {
-        if (t.fulfilled)
+        if (t.fulfilled && !t.loseCondition)
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
         else this.taskList.innerHTML += `${t.description}<br/>`;
       });
@@ -186,19 +186,22 @@ export class BattleScene extends Scene {
     BattleMusic.currentTime = 0;
     BattleMusic.play();
 
+    const allyCount = gm.actors.filter((a) => !a.enemy).length;
+    const enemyCount = gm.actors.length - allyCount;
     let allies = 0;
     let enemies = 0;
+    console.log(allyCount, enemyCount);
     for (let i = 0; i < gm.actors.length; i++) {
       const actor = gm.actors[i];
-
       if (actor.enemy) {
-        actor.view.position.copy(config.enemyPositions[enemies]);
+        config.line((enemies + 1) / (enemyCount + 1), actor.view.position);
         this.add(actor.view);
-        enemies += 1;
+        enemies++;
       } else {
-        actor.view.position.copy(config.allyPositions[allies]);
+        config.line((allies + 1) / (allyCount + 1), actor.view.position);
+        actor.view.position.x *= -1;
         this.add(actor.view);
-        allies += 1;
+        allies++;
       }
     }
     this.initialActors = [...gm.actors];

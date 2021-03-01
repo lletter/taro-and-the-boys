@@ -39,8 +39,7 @@ class View extends Group {
     shadow.material.depthTest = false;
     this.add(shadow);
     this.stunIndicator = loadSpriteSheet(StunSheet, 8, 10);
-    this.stunIndicator.scale.set(0.5, 0.5, 1);
-    this.stunIndicator.renderOrder = 5;
+    this.stunIndicator.scale.set(0.2, 0.2, 1);
     this.stunIndicator.visible = false;
     this.add(this.stunIndicator);
     this.updateSize();

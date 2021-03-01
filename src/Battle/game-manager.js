@@ -51,7 +51,7 @@ export class GameManager {
         const actor = this.actors.find((a) => a.name === name);
         if (actor) {
           tasks.forEach((task) => {
-            this.tasks.push(new task.type(actor, task.options));
+            this.tasks.push(new task.type(actor, task.options, this));
           });
         }
       }
@@ -76,6 +76,10 @@ export class GameManager {
         this.scene.close();
         MainMenu.show();
         if (current === GameState.WON) {
+          if (gameState.level === 3) {
+            MainMenu.setHeader('CONGRATULATIONS!');
+            MainMenu.setDescription('Thanks for playing our game!</br>');
+          }
           MainMenu.setHeader('YOU WON');
           MainMenu.setButtonText('Next Round');
         } else {

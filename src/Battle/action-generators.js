@@ -189,7 +189,7 @@ export class Fling extends Move {
   generateAction(target) {
     return {
       generator: this,
-      target: this,
+      target: target,
       execute: async () => {
         const stunned = Math.random() < this.stunChance;
         if (stunned) target.status = status.STUNNED;
@@ -215,6 +215,7 @@ export class Fling extends Move {
         });
         this.owner.view.remove(projectile);
         SplatSound.play();
+        target.updateView();
         await target.view.onHit(0.3);
         await delay(0.75);
         if (stunned) target.updateView();
@@ -329,13 +330,14 @@ export class Throw extends Move {
 export class Heal extends Move {
   constructor(owner, config = {}) {
     super(owner, config);
-    this.restore = config.restore || 20;
+    this.restore = config.restore || 35;
     this.name = this.name || 'Feed Egg';
     this.description = `Restore ${this.restore} health to all allies.`;
   }
 
   async healOne(ally) {
     ally.HP += this.restore;
+    if (ally.HP > ally.maxHP) ally.HP = ally.maxHP;
 
     // ANIMATION
     const start = new Vector3().copy(this.owner.view.position);

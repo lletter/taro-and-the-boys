@@ -2,7 +2,14 @@ import * as models from '../data';
 import * as profiles from '../data/Profiles';
 import { Actor } from './actor';
 import { Attack, Guard, Fling, Throw, Heal, Multi } from './action-generators';
-import { AtLeastOneAllyDead, GuardInRowTask, ThrowAllyTimes } from './tasks';
+import {
+  AtLeastOneAllyDead,
+  CannotHeal,
+  FlingAllEnemies,
+  GuardInRowTask,
+  MustThrow,
+  ThrowAllyTimes,
+} from './tasks';
 
 export const Taro = () =>
   new Actor({
@@ -131,15 +138,17 @@ export const Levels = {
     enemies: [Beebo, Booba],
     tasks: {
       any: [{ type: AtLeastOneAllyDead }],
-      Chicken: [{ type: GuardInRowTask, options: { times: 2 } }],
+      Chicken: [{ type: CannotHeal }],
+      Dog: [{ type: GuardInRowTask, options: { times: 2 } }],
       Taro: [{ type: ThrowAllyTimes, options: { times: 3 } }],
+      Monke: [{ type: FlingAllEnemies }],
     },
   },
   3: {
     actors: [],
     enemies: [God],
     tasks: {
-      Taro: [{ type: ThrowAllyTimes, options: { times: 5 } }],
+      Taro: [{ type: MustThrow }],
     },
   },
 };
