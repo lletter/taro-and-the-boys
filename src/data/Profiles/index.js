@@ -4,6 +4,7 @@ import ShibeProfilePNG from './ShibeProfile.png';
 import TaroProfilePNG from './TaroProfile.png';
 import BeeboProfilePNG from './beebo-profile.png';
 import BoobaProfilePNG from './booband-profile.png';
+import SlimePNG from './slimeboi.png';
 
 export const ChickenProfile = new Image(46, 46);
 ChickenProfile.src = ChickenProfilePNG;
@@ -17,3 +18,5 @@ export const BeeboProfile = new Image(46, 46);
 BeeboProfile.src = BeeboProfilePNG;
 export const BoobaProfile = new Image(46, 46);
 BoobaProfile.src = BoobaProfilePNG;
+export const SlimeProfile = new Image(32, 32);
+SlimeProfile.src = SlimePNG;

@@ -41,6 +41,7 @@ export class BattleScene extends Scene {
     this.arrow = Arrow();
     this.arrow.material.depthWrite = false;
     this.add(this.arrow);
+    this.currentActor = null;
 
     // The menu stack. Don't remove the root menu, it's buggy.
     // Sub-menu adds menus onto the menu stack
@@ -62,6 +63,9 @@ export class BattleScene extends Scene {
       if (this.menus.length > 1) {
         this.menus.pop().remove();
         this.setActive(this.menus[this.menus.length - 1], true);
+        this.currentActor &&
+          this.currentActor.profile &&
+          this.changeProfile(this.currentActor.profile); // workaround
       }
     });
   }
@@ -92,7 +96,7 @@ export class BattleScene extends Scene {
   openMenu(gm, actor) {
     this.menus[0].style.visibility = 'visible';
     this.menus[0].style.pointerEvents = 'auto';
-
+    this.currentActor = actor;
     actor.moves.forEach((move) => {
       this.createMenuItem(this.menus[0], move, () => {
         if (move.onChosen) {

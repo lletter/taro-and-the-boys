@@ -109,6 +109,7 @@ export const Slime = () =>
     enemy: true,
     view: models.Slime(),
     defenseMod: 1,
+    profile: profiles.SlimeProfile,
     HP: 80,
   })
     .addMove(Attack, { damage: 5 })
