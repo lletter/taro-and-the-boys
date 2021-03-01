@@ -82,7 +82,7 @@ export class BattleScene extends Scene {
           this.taskList.innerHTML += `<strike>${t.description}</strike><br/>`;
         else this.taskList.innerHTML += `${t.description}<br/>`;
       });
-    this.changeProfile(gm.activeActor.profile);
+    gm.activeActor.profile && this.changeProfile(gm.activeActor.profile);
   }
 
   /**
@@ -212,7 +212,6 @@ export class BattleScene extends Scene {
   }
 
   close() {
-    this.initialActors.forEach((actor) => actor.view.sprite.animation.free());
     BattleMusic.pause();
   }
 }

@@ -18,7 +18,7 @@ const GameState = {
 
 export class GameManager {
   get activeActor() {
-    return this.actors[this.turnCount % this.actors.length];
+    return this.actors[this.turnCount];
   }
 
   constructor(level, scene) {
@@ -31,6 +31,10 @@ export class GameManager {
     // Get the level data and load the level
     const data = Levels[level];
     this.actors = [...gameState.alive, ...data.enemies.map((a) => a())];
+    this.actors.forEach((a) => {
+      a.HP = a.maxHP;
+      a.updateView();
+    });
 
     // Load tasks
     this.tasks = [
@@ -62,7 +66,7 @@ export class GameManager {
   run(action) {
     this.scene.closeMenu();
     action.execute().then(() => {
-      this.turnCount += 1;
+      this.turnCount = (this.turnCount + 1) % this.actors.length;
       this.actors.forEach((a) => a.updateView());
       this.tasks.forEach((t) => t.update(action));
 
@@ -95,10 +99,16 @@ export class GameManager {
 
   // Check and updates status of all Actors
   statusCheck() {
-    // // Remove DEAD actors
-    this.actors = this.actors.filter(
-      (a) => !(a.HP <= 0 || a.status === status.DEAD)
-    );
+    // Remove DEAD actors
+    for (let i = 0; i < this.actors.length; i++) {
+      const actor = this.actors[i];
+      if (actor.HP <= 0) {
+        actor.view.sprite.animation.free();
+        this.actors.splice(i, 1);
+        const index = gameState.alive.indexOf(actor);
+        index > -1 && gameState.alive.splice(index, 1);
+      }
+    }
 
     // We should continue if a task becomes invalid
     const shouldContinue = this.tasks.every((t) => t.valid);

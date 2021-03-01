@@ -214,7 +214,7 @@ export class Fling extends Move {
         this.owner.view.remove(projectile);
         SplatSound.play();
         await target.view.onHit(0.3);
-        if (stunned) await delay(1);
+        await delay(0.75);
         if (stunned) await target.view.onStun(1);
       },
     };
